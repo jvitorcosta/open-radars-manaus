@@ -1,0 +1,29 @@
+name: Algo errado [Something's wrong]
+description: Um ponto da lista está errado [A listed point is wrong]
+labels: [correção]
+body:
+  - type: input
+    id: id
+    attributes:
+      label: Id do ponto [Point id]
+      description: O id está na primeira coluna de data/radars.csv [The id is in the first column]
+      placeholder: mao-0001
+    validations:
+      required: true
+  - type: dropdown
+    id: problema
+    attributes:
+      label: O que está errado [What is wrong]
+      options:
+        - mudou de lugar [moved]
+        - não existe mais [gone]
+        - limite errado [wrong limit]
+        - sentido errado [wrong direction]
+        - outro [other]
+    validations:
+      required: true
+  - type: textarea
+    id: detalhes
+    attributes:
+      label: Detalhes [Details]
+      description: Onde fica agora, qual é o limite certo, o sentido, quando você viu. Sem placas nem rostos nas fotos / no plates or faces in photos.

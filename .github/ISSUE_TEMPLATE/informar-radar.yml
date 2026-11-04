@@ -1,0 +1,55 @@
+name: Informar um radar [Report a camera]
+description: Um radar, lombada eletrônica ou câmera de avanço de sinal que não está na lista [A camera that is not on the list]
+labels: [novo-ponto, precisa-verificar]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por ajudar! Só pontos fixos e públicos. Nada de blitz nem radar móvel.
+        Thanks for helping! Fixed public points only.
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo [Kind]
+      options:
+        - Radar de velocidade [speed camera]
+        - Lombada eletrônica [electronic speed bump]
+        - Câmera de avanço de sinal [red-light camera]
+    validations:
+      required: true
+  - type: input
+    id: endereco
+    attributes:
+      label: Endereço ou link do mapa [Address or map link]
+      placeholder: Av. Prof. Nilton Lins 900, Flores
+    validations:
+      required: true
+  - type: input
+    id: sentido
+    attributes:
+      label: Sentido fiscalizado [Direction enforced]
+      description: Para onde vai o carro que é fiscalizado, por exemplo "sentido Centro" [Where the enforced car is heading]
+    validations:
+      required: true
+  - type: input
+    id: limite
+    attributes:
+      label: Limite em km/h, se souber [Speed limit, if known]
+      placeholder: "60"
+  - type: input
+    id: quando
+    attributes:
+      label: Quando você viu [When you saw it]
+      placeholder: AAAA-MM-DD
+  - type: textarea
+    id: foto
+    attributes:
+      label: Foto (opcional) [Photo (optional)]
+      description: cole o link ou arraste a imagem. Sem placas nem rostos / no plates or faces.
+  - type: checkboxes
+    id: fixo
+    attributes:
+      label: Confirmação [Confirmation]
+      options:
+        - label: É um ponto fixo, não blitz nem radar móvel / A fixed point, not a checkpoint or mobile radar
+          required: true
