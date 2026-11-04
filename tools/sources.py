@@ -3,10 +3,13 @@ whether a reported one is already in the list.
 
 Ported from car-cyberdeck's tools/cameras.py (MIT, same author). An item is a dict
 {kind, address, sentido, heading, label, limit, source, lat, lon}; IMMU items have no coordinates.
+IMMU items also carry {street, cross}: the road the radar is on and, at a crossing, the other road.
 """
+import csv
 import html.parser
 import json
 import math
+import os
 import re
 import time
 import unicodedata
@@ -18,6 +21,9 @@ IMMU_URL = "https://immu.manaus.am.gov.br/index.php?r=site%2Finforadar"
 OVERPASS_URLS = ("https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter")
 BBOX = "-3.25,-60.15,-2.90,-59.80"  # south,west,north,east
 USER_AGENT = "open-radars-manaus/1.0 (+https://github.com/jvitorcosta/open-radars-manaus)"
+# The points IMMU announced in the press but not (yet) on its page, typed in from the announcements.
+LISTS = tuple(os.path.join(os.path.dirname(os.path.abspath(__file__)), "lists", f)
+              for f in ("immu-2026-02.csv", "immu-2026-07.csv"))
 
 MATCH_M = 50.0
 HEADING_TOL = 60    # degrees: IMMU gives a cardinal direction, the real bearing can differ
@@ -25,7 +31,8 @@ HEADING_TOL = 60    # degrees: IMMU gives a cardinal direction, the real bearing
 # --- matching ------------------------------------------------------------------------------------
 
 _STOP = {"av", "avenida", "rua", "r", "de", "da", "do", "das", "dos", "e", "em", "frente", "n", "no", "a", "o",
-         "prof", "professor", "cel", "coronel"}
+         "prof", "professor", "cel", "coronel", "tv", "travessa", "dr", "doutor", "gov", "governador",
+         "gen", "general"}
 
 
 def haversine_m(la1, lo1, la2, lo2):
@@ -54,7 +61,8 @@ def matches(item, row):
         return False
     if item.get("lat") is not None and row.get("lat") is not None:
         if haversine_m(item["lat"], item["lon"], row["lat"], row["lon"]) <= MATCH_M:
-            return True
+            # one crossing, two directions: two radars
+            return not _opposed(item.get("heading"), row.get("heading"))
         if item.get("source") == "osm":      # an OSM node has no words worth comparing
             return False
     a, b = _words(item.get("label", "")), _words(row.get("label", ""))
@@ -62,15 +70,21 @@ def matches(item, row):
         return False
     if {w for w in a if w.isdigit()} != {w for w in b if w.isdigit()}:
         return False
-    if item.get("heading") is not None and row.get("heading") is not None:
-        d = abs(item["heading"] - row["heading"]) % 360
-        if min(d, 360 - d) > HEADING_TOL:   # a real bearing (255) vs IMMU's cardinal (270) is fine
-            return False
+    if _opposed(item.get("heading"), row.get("heading")):
+        return False
     da, db = _district(item.get("label", "")), _district(row.get("label", ""))
     if da and db and not (da <= db or db <= da):   # same street, other district: another radar
         return False
     shared = len(a & b)
     return shared >= 2 and shared / min(len(a), len(b)) >= 0.6
+
+
+def _opposed(a, b):
+    """Both headings known and more than HEADING_TOL apart (a real bearing, 255, vs IMMU's cardinal, 270, is not)."""
+    if a is None or b is None:
+        return False
+    d = abs(a - b) % 360
+    return min(d, 360 - d) > HEADING_TOL
 
 
 def diff(items, rows):
@@ -123,7 +137,8 @@ class _ImmuParser(html.parser.HTMLParser):
 
 
 def _abbrev(s):
-    for a, b in (("Avenida ", "Av. "), ("Professor ", "Prof. "), ("Coronel ", "Cel. "), ("Jornalista ", "Jorn. ")):
+    for a, b in (("Avenida ", "Av. "), ("Professor ", "Prof. "), ("Coronel ", "Cel. "), ("Jornalista ", "Jorn. "),
+                 ("Travessa ", "Tv. "), ("Doutor ", "Dr. "), ("Governador ", "Gov. "), ("General ", "Gen. ")):
         s = s.replace(a, b)
     return s
 
@@ -142,6 +157,15 @@ def immu_label(address):
     return re.sub(r"\s+", " ", re.sub(r'[,"]', " ", label)).strip()
 
 
+def crossing_of(address):
+    """(street, cross) of an address: 'Avenida A/Avenida B – Bairro, sentido Sul' -> ('Avenida A', 'Avenida B');
+    cross is '' when the address is not a crossing."""
+    addr = re.split(r",?\s*sentido\s", address, flags=re.I)[0]
+    street = re.split(r"\s+[–—-]\s+", addr)[0].split(",")[0]
+    a, _, b = street.partition("/")
+    return a.strip(), b.strip()
+
+
 def sentido_of(address):
     m = re.search(r"sentido\s+(.+?)\.?$", address.strip(), flags=re.I)
     return m.group(1).strip() if m else ""
@@ -158,16 +182,41 @@ def parse_immu(page):
     items = []
     for kind, text in p.items:
         sentido = sentido_of(text)
+        street, cross = crossing_of(text)
         items.append({"kind": kind, "address": text, "sentido": sentido, "heading": heading_of(sentido),
-                      "label": immu_label(text), "limit": None, "source": "immu", "lat": None, "lon": None})
+                      "label": immu_label(text), "limit": None, "source": "immu", "lat": None, "lon": None,
+                      "street": street, "cross": cross})
+    return _distinct_labels(items)
+
+
+def _distinct_labels(items):
+    """Two radars on one street and district would share a label: tell them apart by their sentido."""
     seen = {}
-    for it in items:   # two radars on one street and district would share a label: tell them apart
+    for it in items:
         seen.setdefault(it["label"], []).append(it)
     for group in seen.values():
         if len(group) > 1:
             for it in group:
                 it["label"] += " " + (it["sentido"].split()[0] if it["sentido"] else "?")
     return items
+
+
+def announced_items(paths=LISTS):
+    """The points of IMMU's announcements (tools/lists/*.csv: kind,street,cross,district,sentido,limit,note)."""
+    items = []
+    for path in paths:
+        with open(path, encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                where = r["street"] + ("/" + r["cross"] if r["cross"] else "")
+                address = where + (", " + r["note"] if r["note"] else "") + " – " + r["district"]
+                if r["sentido"]:
+                    address += ", sentido " + r["sentido"]
+                label = _abbrev(r["street"]) + ("/" + _abbrev(r["cross"]) if r["cross"] else "") + " · " + r["district"]
+                items.append({"kind": r["kind"], "address": address, "sentido": r["sentido"],
+                              "heading": heading_of(r["sentido"]), "label": label,
+                              "limit": int(r["limit"]) if r["limit"] else None, "source": "immu",
+                              "lat": None, "lon": None, "street": r["street"], "cross": r["cross"]})
+    return _distinct_labels(items)
 
 
 # The 7 "Levantamentos Técnicos" on the IMMU page (Av. do Turismo); the limit (60) is from their PDFs.
@@ -186,8 +235,9 @@ def survey_items():
     out = []
     for address, label in _SURVEY:
         s = sentido_of(address)
+        street, cross = crossing_of(address)
         out.append({"kind": "speed", "address": address, "sentido": s, "heading": heading_of(s), "label": label,
-                    "limit": 60, "source": "survey", "lat": None, "lon": None})
+                    "limit": 60, "source": "survey", "lat": None, "lon": None, "street": street, "cross": cross})
     return out
 
 
@@ -218,7 +268,7 @@ def http_req(url, data=None, headers=None, timeout=30):
 
 def fetch_immu():
     _, body = http_req(IMMU_URL)
-    return parse_immu(body.decode("utf-8", "replace")) + survey_items()
+    return parse_immu(body.decode("utf-8", "replace")) + survey_items() + announced_items()
 
 
 def fetch_osm():

@@ -174,9 +174,10 @@ def cmd_place(a):
         print("nothing to review")
         return 0
     out = write_place_page(items)
-    print("wrote %s (%d points, %d new, %d with a heading): open it, check each pin, press save, then run: %s" % (
-        os.path.relpath(out, ROOT), len(items), len(new), sum(1 for i in items if i.get("heading") is not None),
-        APPLY_CMD))
+    print("wrote %s (%d points, %d new, %d at a crossing, %d with a heading): open it, check each pin, press save, "
+          "then run: %s" % (os.path.relpath(out, ROOT), len(items), len(new),
+                            sum(1 for i in new if i.get("how") == "crossing"),
+                            sum(1 for i in items if i.get("heading") is not None), APPLY_CMD))
     if not a.no_serve:
         serve(os.path.dirname(out), os.path.basename(out))
     return 0

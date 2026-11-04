@@ -1,0 +1,22 @@
+kind,street,cross,district,sentido,limit,note
+speed,Avenida Pedro Teixeira,,Dom Pedro I,Oeste,60,nº 725
+speed,Avenida Pedro Teixeira,Rua Salinas,Dom Pedro I,Leste,60,
+speed,Avenida das Torres,Rua Ordu,Monte das Oliveiras,Norte,60,
+speed,Avenida Governador José Lindoso,Rua Vasco Ataíde,Cidade Nova,Sul,60,oposto à rua Vasco Ataíde
+bump,Avenida São Jorge,Travessa Doutor Alfredo da Mata,São Jorge,Leste,40,
+bump,Avenida General Rodrigo Otávio,Rua Maia Andrade,Crespo,,40,rotatória da Suframa
+redlight,Avenida Leonardo Malcher,Rua Emílio Moreira,Centro,,,
+redlight,Avenida Leonardo Malcher,Rua Major Gabriel,Centro,,,
+redlight,Rua Major Gabriel,Avenida Tarumã,Centro,,,
+redlight,Avenida General Rodrigo Otávio,,Coroado,Norte,,acesso à Ufam (rotatória do Coroado)
+redlight,Avenida Tefé,Avenida Borba,Cachoeirinha,Leste,,
+redlight,Avenida Tefé,Avenida Borba,Cachoeirinha,Oeste,,
+redlight,Avenida Timbiras,Avenida Noel Nutels,Zona Norte,bairro,,
+redlight,Avenida Max Teixeira,Rua São Judas Tadeu,Zona Norte,,,
+redlight,Avenida Max Teixeira,,Colônia Santo Antônio,,,alça de retorno
+redlight,Avenida Brasil,Avenida Padre Agostinho Caballero Martin,Santo Antônio,,,viaduto do boulevard
+redlight,Avenida Brasil,Avenida Compensa,Compensa,,,
+redlight,Avenida São Jorge,Avenida Pedro Teixeira,Dom Pedro I,Ponta Negra,,
+redlight,Avenida São Jorge,Avenida Pedro Teixeira,São Jorge,Leste,,
+redlight,Avenida Pedro Teixeira,Avenida Dom Pedro I,Dom Pedro I,Oeste,,
+redlight,Avenida Pedro Teixeira,Rua Paxiúba,Dom Pedro I,Leste,,"written 'Paxuíba' in the announcement"

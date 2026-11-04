@@ -43,8 +43,10 @@ dados e falha enquanto o GeoJSON está desatualizado, por isso vem depois. A CI 
 `python tools/radars.py place` abre um mapa local onde cada ponto é arrastado para a sua pista e
 confirmado; o resultado vai para `placed.json`, aplicado com
 `python tools/radars.py place --apply caminho/para/placed.json` (o navegador salva em Downloads).
-Os pontos vêm do IMMU; para os nós do OpenStreetMap use `place --from osm`. Palpites automáticos só existem nesse mapa; só o
-que uma pessoa confirma entra no CSV.
+Os pontos vêm do IMMU: a página dele e os pontos anunciados à imprensa, transcritos em `tools/lists/`
+(um anúncio novo vira um CSV novo ali). Para os nós do OpenStreetMap use `place --from osm`. Um ponto num
+cruzamento ("Avenida A/Rua B") já aparece onde as duas ruas se encontram, antes da faixa, na pista do sentido.
+Palpites automáticos só existem nesse mapa; só o que uma pessoa confirma entra no CSV.
 
 ## Revisão
 
@@ -67,6 +69,8 @@ the owner checks it and adds the row. To edit the file yourself (edit only the C
 - **Before sending:** `python tools/radars.py geojson` (commit the regenerated GeoJSON), then
   `python tools/radars.py validate` (it fails while the GeoJSON is stale), then `python -m pytest -q`.
 - **Review map:** with the repo cloned, `python tools/radars.py place` opens a local map to drag and
-  confirm points (IMMU by default, `place --from osm` for the OpenStreetMap nodes);
+  confirm points (IMMU by default: its page plus the press announcements typed into `tools/lists/`;
+  `place --from osm` for the OpenStreetMap nodes). A crossing ("Avenida A/Rua B") starts where the two
+  roads meet, just before the junction on the lane of its sentido;
   `place --apply path/to/placed.json` merges the result into the CSV.
 - **Review:** CI must pass and the owner reviews and merges.
