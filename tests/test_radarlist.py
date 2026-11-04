@@ -105,3 +105,15 @@ def test_rows_text_round_trips():
     text = open(GOOD, encoding="utf-8", newline="").read()
     assert rl.validate(text)[0] == []
     assert rl.rows_text(rl.read_rows(GOOD)) == text
+
+
+def test_validate_bad_id_does_not_poison_sorting():
+    # a malformed high-sorting id must not make the valid rows after it look unsorted
+    errs = errors(row(1) + "zzz,speed,-3.1,-60.0,90,60,A,car,2026-11-03\n" + row(2))
+    assert any("id must look like" in e for e in errs)
+    assert not any("sorted" in e for e in errs)
+
+
+def test_validate_rejects_a_bom():
+    errs = rl.validate("﻿" + HDR + row(1))[0]
+    assert errs == ["file must be UTF-8 without BOM"]

@@ -44,9 +44,11 @@ def validate(text, today=None):
     """Returns (errors, warnings). Messages about a row start with 'line N:'."""
     if "\r" in text:
         return ["line endings must be LF"], []
+    if text.startswith("\ufeff"):
+        return ["file must be UTF-8 without BOM"], []
     errors, warnings = [], []
     today = datetime.date.fromisoformat(today) if today else datetime.date.today()
-    lines = text.lstrip("﻿").split("\n")
+    lines = text.split("\n")
     while len(lines) > 1 and lines[-1] == "":
         lines.pop()
     if lines[0] != HEADER:
@@ -61,12 +63,13 @@ def validate(text, today=None):
         pid, kind, lat, lon, head, limit, label, source, checked = f
         if re.fullmatch(r"mao-\d{4}", pid, re.A) is None:
             errors.append("line %d: id must look like mao-0001" % no)
-        elif pid in seen:
-            errors.append("line %d: duplicate id %s" % (no, pid))
-        elif prev is not None and pid < prev:
-            errors.append("line %d: rows must be sorted by id (%s after %s)" % (no, pid, prev))
-        seen.add(pid)
-        prev = pid if prev is None or pid > prev else prev
+        else:   # a malformed id stays out of seen/prev, or it would flag every row after it
+            if pid in seen:
+                errors.append("line %d: duplicate id %s" % (no, pid))
+            elif prev is not None and pid < prev:
+                errors.append("line %d: rows must be sorted by id (%s after %s)" % (no, pid, prev))
+            seen.add(pid)
+            prev = pid if prev is None or pid > prev else prev
         if kind not in KINDS:
             errors.append("line %d: kind must be speed, bump or redlight" % no)
         lat_ok, lon_ok = _degrees_ok(lat, 90), _degrees_ok(lon, 180)
@@ -118,3 +121,81 @@ def rows_text(rows):
         lines.append(",".join([r["id"], r["kind"], "%.6f" % r["lat"], "%.6f" % r["lon"], str(r["heading"]),
                                "" if r["limit"] is None else str(r["limit"]), r["label"], r["source"], r["checked"]]))
     return "\n".join(lines) + "\n"
+
+
+# --- ids, retirement and applying the review map -------------------------------------------------
+
+
+def read_retired(path=RETIRED_PATH):
+    """id -> "date,reason". Skips # lines and blanks."""
+    retired = {}
+    if not os.path.isfile(path):
+        return retired
+    with open(path, encoding="utf-8", newline="") as fh:
+        for line in fh.read().splitlines():
+            if line.strip() == "" or line.startswith("#"):
+                continue
+            rid, _, rest = line.partition(",")
+            retired[rid] = rest
+    return retired
+
+
+def check_ids(rows, retired, base_ids):
+    """Errors for ids that vanished without being retired, and retired ids that came back."""
+    have = {r["id"] for r in rows}
+    errors = ["%s was removed: add it to data/retired.txt" % i for i in sorted(base_ids - have - set(retired))]
+    errors += ["%s is retired and can't come back" % i for i in sorted(have & set(retired))]
+    return errors
+
+
+def next_id(rows, retired):
+    """mao-%04d of 1 + the highest number among rows and retired ids (never reuses a retired id)."""
+    nums = [int(i[4:]) for i in [r["id"] for r in rows] + list(retired)]
+    return "mao-%04d" % (max(nums, default=0) + 1)
+
+
+def _clean_label(label):
+    return " ".join(str(label).replace(",", " ").replace('"', "").split())
+
+
+def apply_placed(csv_path, retired_path, placed, today=None):
+    """Applies the confirmed items of the review map. Returns (added, updated).
+
+    Raises ValueError, leaving the file untouched, if an item is not confirmed, an id is unknown or
+    retired, or the result fails validate.
+    """
+    today = today or datetime.date.today().isoformat()
+    rows = read_rows(csv_path)
+    retired = read_retired(retired_path)
+    by_id = {r["id"]: r for r in rows}
+    added = updated = 0
+    for it in placed:
+        if it.get("confirmed") is not True:
+            raise ValueError("item is not confirmed: %r" % (it,))
+        iid = it.get("id")
+        if iid is not None and iid in retired:
+            raise ValueError("%s is retired and can't come back" % iid)
+        if iid is not None and iid not in by_id:
+            raise ValueError("unknown id %s" % iid)
+        try:
+            fields = {"kind": it.get("kind"), "lat": float(it.get("lat")), "lon": float(it.get("lon")),
+                      "heading": it.get("heading"),
+                      "limit": int(it["limit"]) if it.get("limit") not in (None, "") else None,
+                      "label": _clean_label(it.get("label", "")), "checked": today}
+        except (TypeError, ValueError) as e:
+            raise ValueError("bad item %r: %s" % (it, e))
+        if iid is not None:
+            by_id[iid].update(fields)
+            updated += 1
+        else:
+            row = dict(fields, id=next_id(rows, retired), source=it.get("source"))
+            rows.append(row)
+            by_id[row["id"]] = row
+            added += 1
+    text = rows_text(rows)
+    errors = validate(text, today)[0]
+    if errors:
+        raise ValueError("the result is invalid: " + "; ".join(errors))
+    with open(csv_path, "w", encoding="utf-8", newline="") as fh:
+        fh.write(text)
+    return added, updated
