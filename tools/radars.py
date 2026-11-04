@@ -23,7 +23,7 @@ from sources import diff, fetch_immu, fetch_osm
 TEMPLATE = os.path.join(ROOT, "tools", "review_map.html")
 PLACE_HTML = os.path.join(ROOT, "build", "review_map.html")
 DIST = os.path.join(ROOT, "dist")
-APPLY_CMD = "python tools/radars.py place --apply placed.json"
+APPLY_CMD = "python tools/radars.py place --apply caminho/para/placed.json"
 VERSION_RE = r"\d{4}\.(0[1-9]|1[0-2])\.\d+"
 
 # --- the review page -----------------------------------------------------------------------------
@@ -162,7 +162,13 @@ def cmd_place(a):
         new, _ = diff(items, rows)
     if new:
         print("placing %d new points (about a second each)..." % len(new), file=sys.stderr)
-    new = [it if it.get("lat") is not None else autoplace.autoplace(it) for it in new]
+    placed = []
+    for n, it in enumerate(new, 1):
+        if it.get("lat") is None:
+            print("[%d/%d] %s" % (n, len(new), it.get("label", "")), file=sys.stderr)
+            it = autoplace.autoplace(it)
+        placed.append(it)
+    new = placed
     items = _existing_items(rows) + new
     if not items:
         print("nothing to review")
@@ -199,6 +205,8 @@ def cmd_validate(a):
     errors, warnings = radarlist.validate(text)
     if not errors:       # the rest reads the rows, which only parse once the list is valid
         base = _csv_at(a.base) if a.base else None
+        if a.base and base is None:
+            print("warning: could not read data/radars.csv at %s; removed ids not checked" % a.base)
         errors += radarlist.check_ids(radarlist.read_rows(CSV_PATH), radarlist.read_retired(RETIRED_PATH),
                                       _ids_of(base) if base else set())
         if not geojson.matches(CSV_PATH, GEOJSON_PATH):
@@ -251,6 +259,7 @@ def cmd_release(a):
     for title, ids in (("Adicionados / Added", added), ("Alterados / Changed", changed),
                        ("Removidos / Removed", removed)):
         print("%s: %s" % (title, ", ".join(ids) or "-"))
+    print("Dados: ODbL 1.0 · © OpenStreetMap contributors")
     print("\nThen run, yourself:")
     print("  git tag %s" % v)
     print("  git push origin %s" % v)

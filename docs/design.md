@@ -1,7 +1,6 @@
 # open-radars-manaus: design
 
-Date: 2026-11-04. Owner: João (jvitorcosta). Drafted in car-cyberdeck; moves into the new repo's
-`docs/` when the repo is created, leaving a short pointer here.
+Date: 2026-11-04. Owner: João (jvitorcosta).
 
 ## Intent
 

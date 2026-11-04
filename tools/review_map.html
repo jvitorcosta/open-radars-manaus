@@ -20,7 +20,6 @@
   .card label { display: block; margin: 3px 0; }
   .card input[type=text], .card input[type=number], .card select { width: 100%; box-sizing: border-box; }
   .addr { color: #555; font-size: 12px; }
-  .over { color: #c00; font-weight: bold; }
   button { font-size: 15px; padding: 6px 14px; }
   .arrow { transform-origin: 50% 50%; }
 </style>
@@ -30,7 +29,8 @@
   <p><button id="save">save placed.json</button></p>
   <p class="addr">Select a card, drag its pin onto the road (or click the map), set the arrow to the enforced
   direction of travel (0 = north, 90 = east), confirm the limit from the road sign, untick "include" to skip a point.
-  Labels longer than 27 bytes are cut on small displays; commas and quotes are left out of them.
+  Labels longer than 27 bytes are cut on small displays: drop words rather than cutting them, because the deck
+  matches cameras by the words of the label. Commas and quotes are left out of them.
   Grey pins are points already in the list (position is right from the start); orange pins are guesses.
   A grey point is only saved if you edit it or tick "re-confirm today".
   Then: <code>__APPLY__</code></p>
@@ -51,7 +51,7 @@ var markers = [], cards = [], selected = -1;
 
 function color(it) {
   if (it.existing) return GREY;
-  return it.guess && !it.edited ? ORANGE : COLORS[it.kind];
+  return it.guess && !it.confirmed ? ORANGE : COLORS[it.kind];
 }
 
 function icon(it) {
@@ -64,9 +64,9 @@ function icon(it) {
   return L.divIcon({ html: svg, className: "", iconSize: [40, 40], iconAnchor: [20, 20] });
 }
 
-function edited(i) {   // any edit confirms the point and makes it worth saving
+function edited(i) {   // any edit makes the point worth saving; only a point already in the list is confirmed by it
   ITEMS[i].edited = true;
-  setConfirmed(i, true);
+  if (ITEMS[i].existing) setConfirmed(i, true);   // a guess is confirmed by drag, map click or the checkbox, never by a field
   refresh(i);
 }
 
@@ -88,8 +88,7 @@ function refresh(i) {
   markers[i].setIcon(icon(ITEMS[i]));
   var c = cards[i], n = bytes(ITEMS[i].label);
   var cnt = c.querySelector(".cnt");
-  cnt.textContent = n + "/27 bytes";
-  cnt.className = "cnt" + (n > 27 ? " over" : "");
+  cnt.textContent = n > 27 ? n + " bytes: o CarDeck mostra só os primeiros 27" : n + "/27 bytes";
   c.classList.toggle("off", !ITEMS[i].include);
   c.querySelector(".limit").disabled = ITEMS[i].kind === "redlight";
 }
@@ -97,7 +96,7 @@ function refresh(i) {
 ITEMS.forEach(function (it, i) {
   it.include = true;
   var m = L.marker([it.lat, it.lon], { draggable: true, icon: icon(it) }).addTo(map);
-  m.on("dragend", function () { var p = m.getLatLng(); it.lat = p.lat; it.lon = p.lng; edited(i); select(i); });
+  m.on("dragend", function () { var p = m.getLatLng(); it.lat = p.lat; it.lon = p.lng; setConfirmed(i, true); edited(i); select(i); });
   m.on("click", function () { select(i); });
   markers.push(m);
 
@@ -146,10 +145,12 @@ map.on("click", function (e) {
   if (selected < 0) return;
   ITEMS[selected].lat = e.latlng.lat; ITEMS[selected].lon = e.latlng.lng;
   markers[selected].setLatLng(e.latlng);
+  setConfirmed(selected, true);
   edited(selected);
 });
 
 if (ITEMS.length) {
+  map.invalidateSize();
   map.fitBounds(L.latLngBounds(ITEMS.map(function (it) { return [it.lat, it.lon]; })).pad(0.2));
   select(0);
 }

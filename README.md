@@ -18,8 +18,8 @@ aplicativo, um estudo); como usar fica por conta de cada um.
 
 Você pode ajudar de duas formas, e não precisa saber git para a primeira:
 
-1. **Abra uma issue** com um dos formulários: [Informar um radar](../../issues/new?template=informar-radar.yml)
-   para um ponto novo, ou [Algo errado](../../issues/new?template=algo-errado.yml) para corrigir um
+1. **Abra uma issue** com um dos formulários: [Informar um radar](https://github.com/jvitorcosta/open-radars-manaus/issues/new?template=informar-radar.yml)
+   para um ponto novo, ou [Algo errado](https://github.com/jvitorcosta/open-radars-manaus/issues/new?template=algo-errado.yml) para corrigir um
    ponto que já está na lista (mudou de lugar, não existe mais, limite ou sentido errado).
 2. **Envie um Pull Request** editando `data/radars.csv`. O passo a passo está em
    [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -30,6 +30,8 @@ Toda contribuição é conferida automaticamente e revisada pelo dono do reposit
 
 - CSV: https://github.com/jvitorcosta/open-radars-manaus/releases/latest/download/radars.csv
 - GeoJSON: https://github.com/jvitorcosta/open-radars-manaus/releases/latest/download/radars.geojson
+
+A primeira versão ainda não foi publicada; os links funcionam a partir dela.
 
 As versões usam o calendário (`AAAA.MM.N`, por exemplo `2026.11.0`), então dá para fixar uma versão.
 O que mudou em cada uma está no [CHANGELOG.md](CHANGELOG.md). O arquivo `data/radars.csv` é a fonte
@@ -50,7 +52,7 @@ CSV simples, UTF-8, quebra de linha LF, sem aspas, linhas em ordem de `id`.
 | `source` | de onde o ponto veio primeiro: `immu`, `osm`, `survey`, `car` ou `community` |
 | `checked` | data (AAAA-MM-DD) em que uma pessoa confirmou o ponto no mapa de revisão ou na rua. Obrigatório |
 
-Um ponto por sentido: uma câmera que cobre os dois sentidos são duas linhas com `heading` opostos.
+Um ponto por sentido: uma câmera nos dois sentidos ocupa duas linhas, com `heading` opostos.
 
 ## Regras
 
@@ -68,10 +70,9 @@ Um ponto por sentido: uma câmera que cobre os dois sentidos são duas linhas co
 
 ## Nota legal
 
-Este repositório lista posições de infraestrutura pública de fiscalização. Não é um detector de radar:
-não capta nem emite sinal algum. O Código de Trânsito Brasileiro (art. 230, III) proíbe o uso de
-detectores; comparar uma posição de GPS com uma lista não é um deles. Isto é uma nota informativa,
-não uma orientação jurídica.
+Este repositório não contém nem incentiva detectores de radar, proibidos pelo CTB (art. 230, III);
+só lista onde fica a infraestrutura pública de fiscalização, e não capta nem emite sinal algum.
+Isto é uma nota informativa, não é aconselhamento jurídico.
 
 ---
 
@@ -99,6 +100,8 @@ Every change is checked by CI and reviewed by the owner, who merges.
 - CSV: https://github.com/jvitorcosta/open-radars-manaus/releases/latest/download/radars.csv
 - GeoJSON: https://github.com/jvitorcosta/open-radars-manaus/releases/latest/download/radars.geojson
 
+No release yet; the links work once the first one is out.
+
 Releases use calendar versions (`YYYY.MM.N`), so you can pin one. `data/radars.csv` is the source of
 truth; `data/radars.geojson` is generated from it.
 
@@ -123,5 +126,6 @@ Data: ODbL 1.0, © OpenStreetMap contributors for the parts that come from OpenS
 ### Legal note
 
 This repository lists positions of public infrastructure. It is not a radar detector: it senses and
-transmits nothing. Brazil's traffic code (CTB art. 230, III) bans detectors; checking a GPS position
-against a list is not one. This is information, not legal advice.
+transmits nothing. This repository neither contains nor encourages radar detectors, which Brazil's
+traffic code (CTB art. 230, III) bans; it only lists where the public enforcement infrastructure
+stands. This is information, not legal advice.

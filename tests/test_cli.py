@@ -72,7 +72,7 @@ def test_place_page_embeds_items(repo, monkeypatch):
     assert radars.main(["place", "--from", "file", "--file", str(repo / "items.json"), "--no-serve"]) == 0
     text = open(radars.PLACE_HTML, encoding="utf-8").read()
     assert "__ITEMS__" not in text and "__APPLY__" not in text
-    assert "python tools/radars.py place --apply placed.json" in text
+    assert "python tools/radars.py place --apply caminho/para/placed.json" in text
     assert "<b>&</b>" not in text            # < > & are escaped inside the embedded JSON
     got = page_items(repo)
     assert [i["label"] for i in got] == ["Av. Teste · Centro", "A <b>&</b>"]
@@ -184,3 +184,42 @@ def test_release_without_a_tag_adds_everything(repo, capsys):
     out = capsys.readouterr().out
     assert "Adicionados / Added: mao-0001, mao-0002" in out
     assert "Removidos / Removed: -" in out
+
+
+def test_review_map_field_edit_confirms_only_existing_points():
+    text = open(radars.TEMPLATE, encoding="utf-8").read()
+    body = text[text.index("function edited(i)"):text.index("function setConfirmed")]
+    assert "if (ITEMS[i].existing) setConfirmed(i, true)" in body    # a field edit confirms only points already in the list
+    assert body.count("setConfirmed") == 1
+    # a guess is confirmed by a drag, a map click or the checkbox
+    assert "setConfirmed(i, true); edited(i)" in text and "setConfirmed(selected, true);" in text
+    assert "it.guess && !it.confirmed ? ORANGE" in text
+
+
+def test_place_prints_progress_per_item(repo, monkeypatch, capsys):
+    set_list(repo, ROW1)
+    items = [{"kind": "speed", "label": "A", "source": "car", "lat": None, "lon": None},
+             {"kind": "speed", "label": "B", "source": "car", "lat": None, "lon": None}]
+    write(str(repo / "items.json"), json.dumps(items))
+    monkeypatch.setattr(autoplace, "autoplace", lambda it: dict(it, lat=-3.2, lon=-60.1, guess=True))
+    assert radars.main(["place", "--from", "file", "--file", str(repo / "items.json"), "--no-serve"]) == 0
+    err = capsys.readouterr().err
+    assert "[1/2] A" in err and "[2/2] B" in err
+
+
+def test_validate_base_warns_when_base_csv_unreadable(repo, capsys):
+    git_init(repo)
+    set_list(repo, ROW1)
+    commit(repo, "one")
+    capsys.readouterr()
+    assert radars.main(["validate", "--base", "no-such-ref"]) == 0
+    assert "warning: could not read data/radars.csv at no-such-ref; removed ids not checked" in capsys.readouterr().out
+
+
+def test_release_notes_stub_names_the_data_licence(repo, capsys):
+    git_init(repo)
+    set_list(repo, ROW1)
+    commit(repo, "first")
+    capsys.readouterr()
+    assert radars.main(["release", "2026.11.1"]) == 0
+    assert "Dados: ODbL 1.0 · © OpenStreetMap contributors" in capsys.readouterr().out
