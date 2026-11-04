@@ -1,0 +1,4 @@
+id,kind,lat,lon,heading,limit,label,source,checked
+mao-0001,speed,-3.100000,-60.000000,270,60,Av. Torquato Tapajós · Flores,immu,2026-11-03
+mao-0002,bump,-3.050000,-60.010000,90,30,Av. Codajás · Petrópolis,survey,2026-11-03
+mao-0003,redlight,-3.090000,-60.020000,180,,Av. Djalma Batista · Chapada,community,2026-11-03

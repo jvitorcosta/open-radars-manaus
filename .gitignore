@@ -1,0 +1,5 @@
+build/
+dist/
+placed.json
+__pycache__/
+.pytest_cache/
