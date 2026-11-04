@@ -52,20 +52,15 @@ def test_snap_no_ways_returns_none():
     assert autoplace.snap(-3.08, -60.02, load("ways_split.json")[:1], 90) is None
 
 
-def test_fetch_ways_keeps_matching_names(monkeypatch):
+def test_fetch_ways_keeps_matching_names_nearby(monkeypatch):
     elements = load("ways_split.json") + [
         {"type": "way", "id": 9, "tags": {"name": "Rua das Flores", "highway": "residential"},
-         "geometry": [{"lat": -3.08, "lon": -60.02}, {"lat": -3.081, "lon": -60.02}]}]
-    sent = []
-
-    def fake(url, data=None, headers=None, timeout=30):
-        sent.append(data.decode())
-        return 200, json.dumps({"elements": elements}).encode()
-
-    monkeypatch.setattr(autoplace, "http_req", fake)
+         "geometry": [{"lat": -3.08, "lon": -60.02}, {"lat": -3.081, "lon": -60.02}]},
+        {"type": "way", "id": 10, "tags": {"name": "Avenida Djalma Batista", "highway": "primary"},
+         "geometry": [{"lat": -3.2, "lon": -60.1}, {"lat": -3.201, "lon": -60.1}]}]
+    monkeypatch.setattr(autoplace, "road_network", lambda: elements)
     ways = autoplace.fetch_ways(-3.08, -60.02, "Avenida Djalma Batista")
     assert [w["id"] for w in ways] == [1001, 1002]
-    assert "around%3A300%2C-3.08%2C-60.02" in sent[0] and "out+tags+geom" in sent[0]
 
 
 def test_street_of():

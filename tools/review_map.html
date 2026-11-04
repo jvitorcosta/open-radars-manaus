@@ -113,7 +113,9 @@ ITEMS.forEach(function (it, i) {
     '<label><input type="checkbox" class="conf"> <b>position is right</b> (dragged onto the road, or ticked by hand)</label>' +
     '<label><input type="checkbox" class="inc" checked> include</label>' +
     '<label class="reconf"><input type="checkbox" class="rc"> re-confirm today (saves it even if untouched)</label>';
-  c.querySelector(".ttl").textContent = (i + 1) + ". " + (it.id || it.source || "") + (it.guess ? " (palpite / guess: drag it!)" : "");
+  var HOW = { crossing: "at the crossing", street: "somewhere on the street", none: "not found: city centre" };
+  c.querySelector(".ttl").textContent = (i + 1) + ". " + (it.id || it.source || "") +
+    (it.guess ? " (palpite / guess" + (HOW[it.how] ? ", " + HOW[it.how] : "") + ": drag it!)" : "");
   c.querySelector(".addr").textContent = (it.address || "") + (it.sentido ? " (sentido " + it.sentido + ")" : "");
   var label = c.querySelector(".label"), kind = c.querySelector(".kind"), limit = c.querySelector(".limit"),
       head = c.querySelector(".head"), rng = c.querySelector(".rng"), inc = c.querySelector(".inc");
@@ -149,11 +151,13 @@ map.on("click", function (e) {
   edited(selected);
 });
 
-if (ITEMS.length) {
+// The map's box only has its size once the page has laid out: fitting before that zooms out to the world.
+window.addEventListener("load", function () {
+  if (!ITEMS.length) return;
   map.invalidateSize();
   map.fitBounds(L.latLngBounds(ITEMS.map(function (it) { return [it.lat, it.lon]; })).pad(0.2));
   select(0);
-}
+});
 
 document.getElementById("save").onclick = function () {
   var out = [], bad = [], unconf = [];
