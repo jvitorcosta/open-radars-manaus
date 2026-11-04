@@ -1,0 +1,4 @@
+{"elements": [
+ {"type": "way", "id": 2001, "tags": {"name": "Rua Pedro Teixeira", "highway": "residential"},
+  "geometry": [{"lat": -3.0800, "lon": -60.0200}, {"lat": -3.0790, "lon": -60.0190}]}
+]}

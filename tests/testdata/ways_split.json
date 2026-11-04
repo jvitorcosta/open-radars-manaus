@@ -1,0 +1,6 @@
+{"elements": [
+ {"type": "way", "id": 1001, "tags": {"name": "Avenida Djalma Batista", "highway": "primary", "oneway": "yes"},
+  "geometry": [{"lat": -3.080000, "lon": -60.0190}, {"lat": -3.080000, "lon": -60.0200}, {"lat": -3.080000, "lon": -60.0210}]},
+ {"type": "way", "id": 1002, "tags": {"name": "Avenida Djalma Batista", "highway": "primary", "oneway": "yes"},
+  "geometry": [{"lat": -3.080136, "lon": -60.0210}, {"lat": -3.080136, "lon": -60.0200}, {"lat": -3.080136, "lon": -60.0190}]}
+]}
