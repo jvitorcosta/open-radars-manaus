@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt_br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Consulta Aferição dos Radares</title>
+    <meta name="csrf-param" content="_csrf-frontend">
+
+<link href="/assets/5c71ca16/css/bootstrap.css" rel="stylesheet">
+<link href="/css/site.css" rel="stylesheet">
+<link href="/css/fonts.css" rel="stylesheet">    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+</head>
+
+<header class="header">
+    <div class="row" style=" height: 35px;">
+        <div class="container text-right">
+            <a href="https://www.facebook.com/immu.manaus" target="_blank"><img src="/images/facebook-branco.png" alt="" style="margin-top: 5px;width:24px; height:24px;"></a>            <a href="https://twitter.com/immu_manaus" target="_blank"><img src="/images/twitter-branco.png" alt="" style="margin-top: 5px;width:24px; height:24px;"></a>            <a href="https://www.instagram.com/immu_manaus" target="_blank"><img src="/images/instagram-branco.png" alt="" style="margin-top: 5px;width:24px; height:24px;"></a>        </div>
+    </div>
+    <div class="imagem-linhas">
+    </div>
+</header>
+
+<body>
+
+
+<div class="wrap">
+
+    <nav id="w0" class="navbar navbar-default navbar-top hide"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#w0-collapse"><span class="sr-only">Toggle navigation</span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span></button></div><div id="w0-collapse" class="collapse navbar-collapse"><ul id="w1" class="navbar-nav navbar-left nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Sobre o Immu <span class="caret"></span></a><ul id="w2" class="dropdown-menu"><li><a href="/index.php?r=site%2Fnossahistoria" tabindex="-1">Nossa História</a></li>
+<li><a href="/index.php?r=site%2Forganograma" tabindex="-1">Organograma</a></li>
+<li><a href="/index.php?r=site%2Fequipe" tabindex="-1">Equipe</a></li>
+<li><a href="/index.php?r=site%2Finfolei" tabindex="-1">Lei de Criação do IMMU</a></li>
+<li><a href="/index.php?r=site%2Fplanogestao" tabindex="-1">Plano de Gestão</a></li>
+<li><a href="/index.php?r=site%2Fouvidoria" tabindex="-1">Ouvidoria</a></li>
+<li><a href="/index.php?r=site%2Fcartaservicos" tabindex="-1">Carta de Serviços ao Usuário</a></li>
+<li><a href="/index.php?r=site%2Ffaleconosco" tabindex="-1">Fale Conosco</a></li>
+<li><a href="/index.php?r=site%2Fregimentointerno" tabindex="-1">Regimento Interno</a></li></ul></li>
+<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Trânsito <span class="caret"></span></a><ul id="w3" class="dropdown-menu"><li><a href="/index.php?r=site%2Feducacao" tabindex="-1">Educação para o Trânsito</a></li>
+<li><a href="/index.php?r=site%2Ffiscalizacao" tabindex="-1">Fiscalização de Trânsito</a></li>
+<li><a href="/index.php?r=site%2Fengenharia" tabindex="-1">Engenharia de Trânsito</a></li>
+<li><a href="/index.php?r=site%2Fplanometas" tabindex="-1">Plano de Metas</a></li></ul></li>
+<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Transporte Urbano <span class="caret"></span></a><ul id="w4" class="dropdown-menu"><li class="dropdown-submenu"><a href="#" tabindex="-1">Coletivo</a><ul><li><a href="/index.php?r=site%2Fconvencional" tabindex="-1">Convencional</a></li></ul></li>
+<li class="dropdown-submenu"><a href="#" tabindex="-1">Comercial</a><ul><li><a href="/index.php?r=site%2Fcarga" tabindex="-1">Carga</a></li>
+<li><a href="/index.php?r=site%2Ffretamento" tabindex="-1">Fretamento</a></li>
+<li><a href="/index.php?r=site%2Fmototaxi" tabindex="-1">Mototáxi</a></li>
+<li><a href="/index.php?r=site%2Fescolar" tabindex="-1">Transporte Escolar</a></li>
+<li><a href="/index.php?r=site%2Fturismo" tabindex="-1">Turismo</a></li>
+<li><a href="/index.php?r=site%2Ftaxi" tabindex="-1">Táxi</a></li>
+<li><a href="/index.php?r=site%2Fproprio" tabindex="-1">Próprio</a></li></ul></li></ul></li>
+<li><a href="/index.php?r=site%2Fformularios">Formulários</a></li>
+<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Recurso <span class="caret"></span></a><ul id="w5" class="dropdown-menu"><li class="dropdown-submenu"><a href="#" tabindex="-1">Transporte Urbano</a><ul><li><a href="/index.php?r=site%2Finfocari" tabindex="-1">CARI</a></li></ul></li>
+<li class="dropdown-submenu"><a href="#" tabindex="-1">Trânsito</a><ul><li><a href="/index.php?r=site%2Finfocda" tabindex="-1">CDA</a></li>
+<li><a href="/index.php?r=site%2Finfojari" tabindex="-1">JARI</a></li></ul></li></ul></li>
+<li><a href="/index.php?r=site%2Fparqueamento">Parqueamento</a></li>
+<li><a href="/index.php?r=site%2Fintegracao">Integração Temporal</a></li>
+<li><a href="/index.php?r=site%2Fnotificacoes">Notificações Publicadas</a></li></ul></div></div></nav>
+    <div class="container">
+                
+<div class="info-radar">
+
+<h2 class="titulo">Localização dos Radares</h2>
+
+    <h4>
+        <b>Radares de velocidade – controlador fixo</b>
+
+    <ol>
+        <li>Avenida Santos Dumont/Seripa 7 – Tarumã, sentido Oeste</li>
+        <li>Avenida Santos Dumont/Seripa 8 – Tarumã, sentido Leste</li>
+        <li>Avenida Professor Nilton Lins, nº 900, Jardim Via Veneto – Flores, sentido Leste</li>
+        <li>Avenida Professor Nilton Lins, nº 851 – Flores, sentido Oeste</li>
+        <li>Avenida Torquato Tapajós, nº 5.555 – Innova – Tarumã, sentido Sul</li>
+        <li>Avenida Coronel Teixeira – em frente à 12ª Região Militar – Ponta Negra, sentido Sul</li>
+        <li>Avenida Coronel Teixeira/Supermercado Yroyak – Ponta Negra, sentido complexo turístico</li>
+        <li>Avenida das Torres/Tenente Roxana Bonessi – Nova Cidade, sentido Sul</li>
+        <li>Avenida das Torres, nº 352 – Nova Galileia – Nova Cidade, sentido Norte</li>
+        <li>Avenida Autaz Mirim – oposto ao Atacadão da Grande Circular – Coroado, sentido Sul</li>
+        <li>Avenida Autaz Mirim/Creche Maria Aparecida Silva Dantas – Zumbi dos Palmares, sentido Norte</li>
+        <li>Avenida Torquato Tapajós – frente ao Nova Era – Da Paz, sentido Sul</li>
+        <li>Avenida Torquato Tapajós – frente à Fábrica TPV – Flores, sentido Sul</li>
+    </ol>
+
+    </h4>
+    <br>
+
+    <h4>
+        <b>Lombadas eletrônicas – redutores de velocidade</b>
+
+    <ol>
+        <li>Avenida Ephigênio Salles, nº 1.835 – condomínio Bosque Imperial – Aleixo, sentido Oeste</li>
+        <li>Avenida Rodrigo Otávio/Rua das Águias – Vila Buriti, sentido Leste</li>
+    </ol>
+    </h4>
+
+    <br>
+
+    <h4><b>Radares de avanço de sinal vermelho</b>
+
+    <ol>
+        <li>Avenida Codajás/Avenida Marquês da Silveira – Petrópolis, sentido Oeste</li>
+        <li>Avenida Codajás/Avenida Marquês da Silveira – São Francisco, sentido Leste</li>
+        <li>Avenida Paraíba/Avenida André Araújo – Adrianópolis, sentido Norte</li>
+        <li>Avenida André Araújo (alça)/Avenida Jornalista Umberto Calderaro Filho – Adrianópolis, sentido Leste</li>
+        <li>Avenida Jornalista Umberto Calderaro Filho/Rua Belo Horizonte – Adrianópolis, sentido Norte.</li>
+    </ol>
+    </h4>
+
+    <br>
+
+    <h2 class="titulo">Informações Importantes - Consulta Aferição dos Radares</h2>
+
+    <br>
+
+    <h4><b>O que é?</b></h4>
+
+    <h4 style="text-align: justify">
+        É a possibilidade de consultar se os radares (medidores de velocidade) estão com o certificado de verificação válido.
+    </h4>
+
+    <h4 style="text-align: justify">
+        Os equipamentos aprovados recebem um laudo técnico com validade de um ano. Em caso de reprovação, a empresa responsável pelo radar é autuada e o equipamento interditado. Para a legitimidade das multas
+        emitidas em função dos radares - atendendo os parâmetros determinados pelo Código de Trânsito Brasileiro -, o medidor de velocidade (radar) precisa estar verificado e aprovado pelo Ipem-AM e
+        a verificação estar dentro do prazo de validade.
+    </h4>
+
+    <br>
+
+    <h4><b>Quem pode solicitar?</b></h4>
+
+    <h4 style="text-align: justify">
+        Cidadão
+    </h4>
+
+    <br>
+
+    <h4><b>Onde pode solicitar?</b></h4>
+
+    <h4 style="text-align: justify">
+        Pela internet
+    </h4>
+
+    <br>
+
+    <h4><b>Como pode solicitar?</b></h4>
+
+    <h4 style="text-align: justify">
+        No <b>Portal de Serviços do Inmetro</b> nos estados, informe:
+
+        <ul>
+            <li>em Tipo de Instrumento, escolha Medidor de Velocidade</li>
+            <li>em Estado, onde o radar está instalado</li>
+        </ul>
+
+        Quanto mais dados puder informar, maior a possibilidade de encontrar o radar que está buscando.
+    </h4>
+
+    <br>
+
+    <h4><b>Prazo</b></h4>
+
+    <h4 style="text-align: justify">
+        A consulta é imediata.
+    </h4>
+
+    <br>
+
+    <table class="table table-light">
+        <thead>
+        <tr>
+            <td colspan="2"><h3>Levantamentos Técnicos</h3></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="width: 90%"><h4>Av. do Turismo, oposto a empresa vida film nº 12568 - Tarumã-açu sentido oeste</h4></td>
+            <td style="width: 10%"><a class="btn btn-info" href="/formularios/Levantamento-tecnico-avturismofilm.pdf" target="_blank">Visualizar</a></td>
+        </tr>
+
+        <tr>
+            <td style="width: 90%"><h4>Av. do Turismo/Av. Thales Loureiro - Ponta negra sentido compl tur ponta negra</h4></td>
+            <td style="width: 10%"><a class="btn btn-info" href="/formularios/Levantamento-tecnico-avturismothalesloureiro.pdf" target="_blank">Visualizar</a></td>
+        </tr>
+
+        <tr>
+            <td style="width: 90%"><h4>Av. do Turismo, em frente a 123ª IEADAM - Tarumã sentido norte</h4></td>
+            <td style="width: 10%"><a class="btn btn-info" href="/formularios/Levantamento-tecnico-avturismo123ieadm.pdf" target="_blank">Visualizar</a></td>
+        </tr>
+
+        <tr>
+            <td style="width: 90%"><h4>Av. do Turismo, 3727 - Ponta negra sentido compl tur ponta negra</h4></td>
+            <td style="width: 10%"><a class="btn btn-info" href="/formularios/Levantamento-tecnico-avturismo3727.pdf" target="_blank">Visualizar</a></td>
+        </tr>
+
+        <tr>
+            <td style="width: 90%"><h4>Av. do Turismo, oposto ao Cond Viver Tarumã - Tarumã-Açu sentido oeste</h4></td>
+            <td style="width: 10%"><a class="btn btn-info" href="/formularios/Levantamento-tecnico-avturismocondvivertaruma.pdf" target="_blank">Visualizar</a></td>
+        </tr>
+
+        <tr>
+            <td style="width: 90%"><h4>Av. do Turismo, oposto Cond. Mediterrâneo I - Tarumã sentido aerop Eduardo Gomes</h4></td>
+            <td style="width: 10%"><a class="btn btn-info" href="/formularios/Levantamento-tecnico-avturismomediterraneo.pdf" target="_blank">Visualizar</a></td>
+        </tr>
+
+        <tr>
+            <td style="width: 90%"><h4>Av. do Turismo, em frente ao Cond Viva Vida Tarumã - Tarumã sentido leste</h4></td>
+            <td style="width: 10%"><a class="btn btn-info" href="/formularios/Levantamento-tecnico-avturismocondvivataruma.pdf" target="_blank">Visualizar</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <div class="form-group">
+        <a class="btn btn-primary" href="https://servicos.rbmlq.gov.br/Instrumento" target="_blank">Acesse o site do Inmetro</a>        <a class="btn btn-danger" href="/index.php?r=">Voltar para Página Principal</a>    </div>
+</div>    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <p>
+                    &copy; Serviços IMMU 2026<br>
+                    <a href="/index.php?r=site%2Fabout" style="text-decoration: none; color: black;">Divisão de Tecnologia da Informação</a><br>
+                </p>
+            </div>
+            <div class="col-sm-4 text-center">
+                <p>
+                    <img class="brasao" src="/images/brasao.png" alt="">                </p>
+            </div>
+            <div class="col-sm-4">
+                <p class="text-right">
+                    <b>Contato</b><br>
+                    atendimento.immu@pmm.am.gov.br<br>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="text-center"><b>*Este site não utiliza cookies e não coleta dados sem o consentimento do usuário</b></div>
+    <div class="faixa-rodape"></div>
+</footer>
+
+<script src="/assets/730b67db/jquery.js"></script>
+<script src="/assets/2ea77a5b/yii.js"></script>
+<script src="/assets/5c71ca16/js/bootstrap.js"></script></body>
+</html>
