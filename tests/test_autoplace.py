@@ -116,3 +116,13 @@ def test_autoplace_uses_snap_when_found(monkeypatch):
     out = autoplace.autoplace(item)
     assert (out["lat"], out["lon"], out["heading"], out["guess"]) == (-3.0801, -60.0201, 270, True)
     assert out["label"] == "x"
+
+
+def test_geocode_survives_an_unexpected_nominatim_shape(monkeypatch):
+    monkeypatch.setattr(autoplace.time, "sleep", lambda s: None)
+    item = {"address": "Avenida Teste, nº 1 – Centro"}
+    for body in (b'{"error": "rate limited"}', b'[{"nolat": 1}]', b'[null]', b'"text"', b'[[]]'):
+        monkeypatch.setattr(autoplace, "http_req", lambda url, body=body: (200, body))
+        assert autoplace.geocode(item) is None
+        out = autoplace.autoplace(item)
+        assert out["guess"] is True and (out["lat"], out["lon"]) == autoplace.CENTRE

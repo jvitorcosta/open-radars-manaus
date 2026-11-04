@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review map</title>
+<!-- Template for tools/radars.py: __ITEMS__ is replaced by the points to review, __APPLY__ by the command
+     that takes placed.json. radars.py serves it on 127.0.0.1: OSM refuses tiles to a file:// page (no Referer). -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  html, body { height: 100%; margin: 0; font: 14px system-ui, sans-serif; }
+  body { display: flex; }
+  #side { width: 360px; overflow-y: auto; padding: 8px; box-sizing: border-box; border-right: 1px solid #ccc; }
+  #map { flex: 1; }
+  .card { border: 1px solid #bbb; border-radius: 6px; padding: 6px; margin-bottom: 8px; cursor: pointer; }
+  .card.sel { border-color: #d33; background: #fff4f4; }
+  .card.unconf { border-left: 5px solid #e90; }
+  .card.old { border-left: 5px solid #888; }
+  .card.off { opacity: .5; }
+  .card label { display: block; margin: 3px 0; }
+  .card input[type=text], .card input[type=number], .card select { width: 100%; box-sizing: border-box; }
+  .addr { color: #555; font-size: 12px; }
+  .over { color: #c00; font-weight: bold; }
+  button { font-size: 15px; padding: 6px 14px; }
+  .arrow { transform-origin: 50% 50%; }
+</style>
+</head>
+<body>
+<div id="side">
+  <p><button id="save">save placed.json</button></p>
+  <p class="addr">Select a card, drag its pin onto the road (or click the map), set the arrow to the enforced
+  direction of travel (0 = north, 90 = east), confirm the limit from the road sign, untick "include" to skip a point.
+  Labels longer than 27 bytes are cut on small displays; commas and quotes are left out of them.
+  Grey pins are points already in the list (position is right from the start); orange pins are guesses.
+  A grey point is only saved if you edit it or tick "re-confirm today".
+  Then: <code>__APPLY__</code></p>
+  <div id="cards"></div>
+</div>
+<div id="map"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+"use strict";
+var ITEMS = __ITEMS__;
+var map = L.map("map").setView([-3.10, -60.02], 12);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(map);
+
+var COLORS = { speed: "#d33", bump: "#e90", redlight: "#2a2" };
+var GREY = "#888", ORANGE = "#f80";
+var markers = [], cards = [], selected = -1;
+
+function color(it) {
+  if (it.existing) return GREY;
+  return it.guess && !it.edited ? ORANGE : COLORS[it.kind];
+}
+
+function icon(it) {
+  var h = it.heading == null ? 0 : it.heading;
+  var col = color(it);
+  var svg = '<svg class="arrow" width="40" height="40" viewBox="-20 -20 40 40" style="transform:rotate(' + h + 'deg)">' +
+    '<circle r="5" fill="' + col + '" stroke="#fff" stroke-width="2"/>' +
+    '<path d="M0,-18 L7,-6 L2,-6 L2,0 L-2,0 L-2,-6 L-7,-6 Z" fill="' + col + '" stroke="#fff" stroke-width="1.5"' +
+    (it.heading == null ? ' opacity=".35"' : '') + '/></svg>';
+  return L.divIcon({ html: svg, className: "", iconSize: [40, 40], iconAnchor: [20, 20] });
+}
+
+function edited(i) {   // any edit confirms the point and makes it worth saving
+  ITEMS[i].edited = true;
+  setConfirmed(i, true);
+  refresh(i);
+}
+
+function setConfirmed(i, v) {
+  ITEMS[i].confirmed = v;
+  cards[i].querySelector(".conf").checked = v;
+  cards[i].classList.toggle("unconf", !v);
+}
+
+function bytes(s) { return new TextEncoder().encode(s).length; }
+
+function select(i) {
+  selected = i;
+  cards.forEach(function (c, k) { c.classList.toggle("sel", k === i); });
+  map.panTo(markers[i].getLatLng());
+}
+
+function refresh(i) {
+  markers[i].setIcon(icon(ITEMS[i]));
+  var c = cards[i], n = bytes(ITEMS[i].label);
+  var cnt = c.querySelector(".cnt");
+  cnt.textContent = n + "/27 bytes";
+  cnt.className = "cnt" + (n > 27 ? " over" : "");
+  c.classList.toggle("off", !ITEMS[i].include);
+  c.querySelector(".limit").disabled = ITEMS[i].kind === "redlight";
+}
+
+ITEMS.forEach(function (it, i) {
+  it.include = true;
+  var m = L.marker([it.lat, it.lon], { draggable: true, icon: icon(it) }).addTo(map);
+  m.on("dragend", function () { var p = m.getLatLng(); it.lat = p.lat; it.lon = p.lng; edited(i); select(i); });
+  m.on("click", function () { select(i); });
+  markers.push(m);
+
+  var c = document.createElement("div");
+  c.className = "card";
+  c.innerHTML =
+    '<b class="ttl"></b>' +
+    '<div class="addr"></div>' +
+    '<label>label <input type="text" class="label"> <span class="cnt"></span></label>' +
+    '<label>kind <select class="kind"><option>speed</option><option>bump</option><option>redlight</option></select></label>' +
+    '<label>limit km/h (empty = unknown) <input type="number" class="limit" min="1" max="199"></label>' +
+    '<label>heading <input type="number" class="head" min="0" max="359"> ' +
+    '<input type="range" class="rng" min="0" max="359"></label>' +
+    '<label><input type="checkbox" class="conf"> <b>position is right</b> (dragged onto the road, or ticked by hand)</label>' +
+    '<label><input type="checkbox" class="inc" checked> include</label>' +
+    '<label class="reconf"><input type="checkbox" class="rc"> re-confirm today (saves it even if untouched)</label>';
+  c.querySelector(".ttl").textContent = (i + 1) + ". " + (it.id || it.source || "") + (it.guess ? " (palpite / guess: drag it!)" : "");
+  c.querySelector(".addr").textContent = (it.address || "") + (it.sentido ? " (sentido " + it.sentido + ")" : "");
+  var label = c.querySelector(".label"), kind = c.querySelector(".kind"), limit = c.querySelector(".limit"),
+      head = c.querySelector(".head"), rng = c.querySelector(".rng"), inc = c.querySelector(".inc");
+  label.value = it.label || ""; kind.value = it.kind;
+  limit.value = it.limit == null ? "" : it.limit;
+  head.value = it.heading == null ? "" : it.heading; rng.value = it.heading == null ? 0 : it.heading;
+  label.oninput = function () { it.label = label.value.replace(/[,"]/g, " "); edited(i); };  // the deck's CSV has no quoting
+  kind.onchange = function () { it.kind = kind.value; if (it.kind === "redlight") { it.limit = null; limit.value = ""; } edited(i); };
+  limit.oninput = function () { it.limit = limit.value === "" ? null : parseInt(limit.value, 10); edited(i); };
+  head.oninput = function () { it.heading = head.value === "" ? null : ((parseInt(head.value, 10) % 360) + 360) % 360; if (it.heading != null) rng.value = it.heading; edited(i); };
+  rng.oninput = function () { it.heading = parseInt(rng.value, 10); head.value = it.heading; edited(i); };
+  it.edited = false;
+  it.reconfirm = false;
+  it.confirmed = !!it.existing;       // a point already in the list starts as "position is right"
+  c.classList.toggle("unconf", !it.confirmed);
+  c.classList.toggle("old", !!it.existing);
+  c.querySelector(".conf").checked = it.confirmed;
+  c.querySelector(".reconf").style.display = it.existing ? "block" : "none";
+  c.querySelector(".rc").onchange = function () { it.reconfirm = this.checked; };
+  c.querySelector(".conf").onchange = function () { it.edited = true; setConfirmed(i, this.checked); refresh(i); };
+  inc.onchange = function () { it.include = inc.checked; refresh(i); };
+  c.onclick = function () { select(i); };
+  document.getElementById("cards").appendChild(c);
+  cards.push(c);
+  refresh(i);
+});
+
+map.on("click", function (e) {
+  if (selected < 0) return;
+  ITEMS[selected].lat = e.latlng.lat; ITEMS[selected].lon = e.latlng.lng;
+  markers[selected].setLatLng(e.latlng);
+  edited(selected);
+});
+
+if (ITEMS.length) {
+  map.fitBounds(L.latLngBounds(ITEMS.map(function (it) { return [it.lat, it.lon]; })).pad(0.2));
+  select(0);
+}
+
+document.getElementById("save").onclick = function () {
+  var out = [], bad = [], unconf = [];
+  ITEMS.forEach(function (it, i) {
+    if (!it.include) return;
+    if (it.existing && !it.edited && !it.reconfirm) return;   // untouched: nothing to write
+    if (!it.confirmed) { unconf.push(i + 1); return; }
+    if (it.heading == null) { bad.push((i + 1) + " has no heading"); return; }
+    var o = it.existing ? { id: it.id } : {};
+    out.push(Object.assign(o, { kind: it.kind, lat: +it.lat.toFixed(6), lon: +it.lon.toFixed(6), heading: it.heading,
+               limit: it.kind === "redlight" ? null : it.limit, label: it.label, source: it.source, confirmed: true }));
+  });
+  if (bad.length) { alert("Set a heading first: point " + bad.join(", ")); return; }
+  if (unconf.length) {
+    if (!out.length) { alert("Nothing to save. Edit a point, drag a pin onto its road, or tick \"re-confirm today\"."); return; }
+    alert("Left out, position not confirmed: point " + unconf.join(", ") + ". They stay unplaced.");
+  }
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: "application/json" }));
+  a.download = "placed.json";
+  a.click();
+};
+</script>
+</body>
+</html>

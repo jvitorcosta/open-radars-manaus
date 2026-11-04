@@ -44,8 +44,8 @@ def geocode(item):
         res = json.loads(body)
         if res:
             return float(res[0]["lat"]), float(res[0]["lon"])
-    except (urllib.error.URLError, ValueError, OSError):
-        pass
+    except (urllib.error.URLError, ValueError, OSError, KeyError, TypeError, IndexError):
+        pass     # also an unexpected JSON shape, e.g. {"error": ...}
     return None
 
 
@@ -124,7 +124,7 @@ def autoplace(item):
             found = snap(spot[0], spot[1], ways, item.get("heading"))
             if found:
                 spot, heading = (found[0], found[1]), found[2]
-        except (urllib.error.URLError, OSError, ValueError):
+        except (urllib.error.URLError, OSError, ValueError, KeyError, TypeError, AttributeError):
             pass
     out["lat"], out["lon"] = spot or CENTRE
     out["heading"], out["guess"] = heading, True
