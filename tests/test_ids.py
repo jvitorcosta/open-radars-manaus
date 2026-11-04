@@ -59,10 +59,10 @@ def test_apply_appends_with_next_id(files):
 
 
 def test_apply_updates_by_id_and_keeps_source(files):
-    moved = item(id="mao-0002", lat=-3.1002, lon=-60.0, heading=91, limit=40, label="Movida", source="survey")
+    moved = item(id="mao-0002", kind="bump", lat=-3.1002, lon=-60.0, heading=91, limit=40, label="Movida", source="survey")
     assert rl.apply_placed(files[0], files[1], [moved], today="2026-11-04") == (0, 1)
     row = [r for r in rl.read_rows(files[0]) if r["id"] == "mao-0002"][0]
-    assert row["lat"] == -3.1002 and row["limit"] == 40 and row["heading"] == 91
+    assert row["lat"] == -3.1002 and row["limit"] == 40 and row["heading"] == 91 and row["kind"] == "bump"
     assert row["label"] == "Movida" and row["checked"] == "2026-11-04" and row["source"] == "immu"
     assert len(rl.read_rows(files[0])) == 2
 
@@ -95,3 +95,20 @@ def test_apply_refuses_an_invalid_result(files):
 def test_apply_strips_quotes_from_labels(files):
     rl.apply_placed(files[0], files[1], [item(label='  Av. "Brasil",  Centro ')], today="2026-11-04")
     assert rl.read_rows(files[0])[-1]["label"] == "Av. Brasil Centro"
+
+
+def test_apply_refuses_when_the_csv_already_holds_a_retired_id(files):
+    with open(files[1], "a", encoding="utf-8", newline="") as fh:
+        fh.write("mao-0002,2026-10-02,gone\n")
+    _refused(files, [item()], "mao-0002 is retired")
+
+
+def test_apply_refuses_fractional_numbers(files):
+    _refused(files, [item(limit=50.7)], "whole")
+    _refused(files, [item(heading=90.5)], "whole")
+
+
+def test_apply_accepts_whole_floats_and_strings(files):
+    assert rl.apply_placed(files[0], files[1], [item(limit=50.0, heading="180")], today="2026-11-04") == (1, 0)
+    new = rl.read_rows(files[0])[-1]
+    assert new["limit"] == 50 and new["heading"] == 180

@@ -158,6 +158,15 @@ def _clean_label(label):
     return " ".join(str(label).replace(",", " ").replace('"', "").split())
 
 
+def _whole(v):
+    """None for None or "", else an int; 50.7 is refused, not cut to 50."""
+    if v is None or v == "":
+        return None
+    if isinstance(v, float) and not v.is_integer():
+        raise ValueError("%r is not a whole number" % (v,))
+    return int(v)
+
+
 def apply_placed(csv_path, retired_path, placed, today=None):
     """Applies the confirmed items of the review map. Returns (added, updated).
 
@@ -167,6 +176,7 @@ def apply_placed(csv_path, retired_path, placed, today=None):
     today = today or datetime.date.today().isoformat()
     rows = read_rows(csv_path)
     retired = read_retired(retired_path)
+    old_ids = {r["id"] for r in rows}
     by_id = {r["id"]: r for r in rows}
     added = updated = 0
     for it in placed:
@@ -179,8 +189,8 @@ def apply_placed(csv_path, retired_path, placed, today=None):
             raise ValueError("unknown id %s" % iid)
         try:
             fields = {"kind": it.get("kind"), "lat": float(it.get("lat")), "lon": float(it.get("lon")),
-                      "heading": it.get("heading"),
-                      "limit": int(it["limit"]) if it.get("limit") not in (None, "") else None,
+                      "heading": _whole(it.get("heading")),
+                      "limit": _whole(it.get("limit")),
                       "label": _clean_label(it.get("label", "")), "checked": today}
         except (TypeError, ValueError) as e:
             raise ValueError("bad item %r: %s" % (it, e))
@@ -193,7 +203,7 @@ def apply_placed(csv_path, retired_path, placed, today=None):
             by_id[row["id"]] = row
             added += 1
     text = rows_text(rows)
-    errors = validate(text, today)[0]
+    errors = validate(text, today)[0] + check_ids(rows, retired, old_ids)
     if errors:
         raise ValueError("the result is invalid: " + "; ".join(errors))
     with open(csv_path, "w", encoding="utf-8", newline="") as fh:
