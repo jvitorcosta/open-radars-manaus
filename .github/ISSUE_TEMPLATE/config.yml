@@ -1,1 +1,5 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Problema de segurança / Security problem
+    url: https://github.com/jvitorcosta/open-radars-manaus/security/advisories/new
+    about: Avise em particular, não numa issue. / Report it privately, not as an issue.
