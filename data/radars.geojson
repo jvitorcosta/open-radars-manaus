@@ -1,4 +1,24 @@
 {
  "type": "FeatureCollection",
- "features": []
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.97105,
+     -3.073859
+    ]
+   },
+   "properties": {
+    "id": "mao-0001",
+    "kind": "speed",
+    "heading": 275,
+    "limit": null,
+    "label": "Av. Cosme Ferreira · São José Operário",
+    "source": "car",
+    "checked": "2026-11-05"
+   }
+  }
+ ]
 }
