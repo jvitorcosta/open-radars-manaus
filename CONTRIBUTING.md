@@ -46,6 +46,9 @@ confirmado; o resultado vai para `placed.json`, aplicado com
 Os pontos vêm do IMMU: a página dele e os pontos anunciados à imprensa, transcritos em `tools/lists/`
 (um anúncio novo vira um CSV novo ali). Para os nós do OpenStreetMap use `place --from osm`. Um ponto num
 cruzamento ("Avenida A/Rua B") já aparece onde as duas ruas se encontram, antes da faixa, na pista do sentido.
+Pontos marcados no carro (o CarDeck abre uma issue por marca num repositório **privado** do dono, nunca
+neste) entram com `place --from marks --repo dono/nome`; depois de aplicados, `radars.py marks-close`
+fecha essas issues. O token vem de `GH_TOKEN` ou do `gh auth token`.
 Palpites automáticos só existem nesse mapa; só o que uma pessoa confirma entra no CSV.
 
 ## Revisão
@@ -72,5 +75,7 @@ the owner checks it and adds the row. To edit the file yourself (edit only the C
   confirm points (IMMU by default: its page plus the press announcements typed into `tools/lists/`;
   `place --from osm` for the OpenStreetMap nodes). A crossing ("Avenida A/Rua B") starts where the two
   roads meet, just before the junction on the lane of its sentido;
-  `place --apply path/to/placed.json` merges the result into the CSV.
+  `place --apply path/to/placed.json` merges the result into the CSV. Spots marked from the car
+  (the CarDeck posts one issue per mark to the owner's **private** repo, never this one) load with
+  `place --from marks --repo owner/name`; `radars.py marks-close` closes them once applied.
 - **Review:** CI must pass and the owner reviews and merges.

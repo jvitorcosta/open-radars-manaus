@@ -16,6 +16,7 @@ import urllib.error
 
 import autoplace
 import geojson
+import marks
 import radarlist
 from radarlist import CSV_PATH, GEOJSON_PATH, KINDS, RETIRED_PATH, ROOT
 from sources import diff, fetch_immu, fetch_osm
@@ -153,6 +154,19 @@ def cmd_place(a):
             return 2
         with open(a.file, encoding="utf-8") as fh:
             new = json.load(fh)
+    elif a.src == "marks":
+        repo = marks.repo_name(a.repo)
+        if not repo:
+            print("radars: --from marks needs --repo owner/name (or MARKS_REPO)", file=sys.stderr)
+            return 2
+        try:
+            new = marks.fetch_marks(repo, marks.token())
+        except (urllib.error.URLError, OSError, ValueError) as e:
+            print("radars: could not read the marks in %s: %s" % (repo, getattr(e, "reason", e)), file=sys.stderr)
+            return 2
+        if not new:
+            print("no open marks in %s" % repo)
+            return 0
     else:
         try:
             items = fetch_immu() if a.src == "immu" else fetch_osm()
@@ -268,6 +282,20 @@ def cmd_release(a):
     return 0
 
 
+def cmd_marks_close(a):
+    repo = marks.repo_name(a.repo)
+    if not repo:
+        print("radars: marks-close needs --repo owner/name (or MARKS_REPO)", file=sys.stderr)
+        return 2
+    try:
+        n = marks.close_all(repo, marks.token())
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        print("radars: could not close the marks in %s: %s" % (repo, getattr(e, "reason", e)), file=sys.stderr)
+        return 2
+    print("closed %d mark%s in %s" % (n, "" if n == 1 else "s", repo))
+    return 0
+
+
 # --- command line --------------------------------------------------------------------------------
 
 
@@ -277,8 +305,9 @@ def main(argv=None):
     sub.add_parser("fetch").set_defaults(fn=cmd_fetch)
     sub.add_parser("check").set_defaults(fn=cmd_check)
     p = sub.add_parser("place")
-    p.add_argument("--from", dest="src", choices=("immu", "osm", "file"), default="immu")
+    p.add_argument("--from", dest="src", choices=("immu", "osm", "file", "marks"), default="immu")
     p.add_argument("--file", metavar="items.json", help="with --from file: a JSON list of items")
+    p.add_argument("--repo", metavar="OWNER/NAME", help="with --from marks: the private marks repo (or MARKS_REPO)")
     p.add_argument("--apply", metavar="placed.json")
     p.add_argument("--no-serve", action="store_true", help="only write the page, do not start the local server")
     p.set_defaults(fn=cmd_place)
@@ -286,6 +315,9 @@ def main(argv=None):
     p.add_argument("--base", metavar="REF", help="git ref to compare ids with: removed ids must be in retired.txt")
     p.set_defaults(fn=cmd_validate)
     sub.add_parser("geojson").set_defaults(fn=cmd_geojson)
+    p = sub.add_parser("marks-close", help="close the car marks' issues once their points are applied")
+    p.add_argument("--repo", metavar="OWNER/NAME", help="the private marks repo (or MARKS_REPO)")
+    p.set_defaults(fn=cmd_marks_close)
     p = sub.add_parser("release")
     p.add_argument("version", metavar="VERSION", help="YYYY.MM.N")
     p.set_defaults(fn=cmd_release)

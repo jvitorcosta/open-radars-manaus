@@ -258,10 +258,10 @@ def parse_overpass(data):
 # --- network -------------------------------------------------------------------------------------
 
 
-def http_req(url, data=None, headers=None, timeout=30):
+def http_req(url, data=None, headers=None, timeout=30, method=None):
     h = {"User-Agent": USER_AGENT}
     h.update(headers or {})
-    req = urllib.request.Request(url, data=data, headers=h)
+    req = urllib.request.Request(url, data=data, headers=h, method=method)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.status, r.read()
 
