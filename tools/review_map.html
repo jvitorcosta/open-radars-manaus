@@ -31,7 +31,7 @@
   direction of travel (0 = north, 90 = east), confirm the limit from the road sign, untick "include" to skip a point.
   Labels longer than 27 bytes are cut on small displays: drop words rather than cutting them, because the deck
   matches cameras by the words of the label. Commas and quotes are left out of them.
-  Grey pins are points already in the list (position is right from the start); orange pins are guesses.
+  Grey pins are points already in the list (position is right from the start); orange pins are unverified candidates.
   A grey point is only saved if you edit it or tick "re-confirm today".
   Then: <code>__APPLY__</code></p>
   <div id="cards"></div>
@@ -116,7 +116,7 @@ ITEMS.forEach(function (it, i) {
   var HOW = { crossing: "at the crossing", street: "somewhere on the street", none: "not found: city centre",
               car: "marked from the car" };
   c.querySelector(".ttl").textContent = (i + 1) + ". " + (it.id || it.source || "") +
-    (it.guess ? " (palpite / guess" + (HOW[it.how] ? ", " + HOW[it.how] : "") + ": drag it!)" : "");
+    (it.guess ? " (candidato / candidate" + (HOW[it.how] ? ", " + HOW[it.how] : "") + ": drag it!)" : "");
   c.querySelector(".addr").textContent = (it.address || "") + (it.sentido ? " (sentido " + it.sentido + ")" : "");
   var label = c.querySelector(".label"), kind = c.querySelector(".kind"), limit = c.querySelector(".limit"),
       head = c.querySelector(".head"), rng = c.querySelector(".rng"), inc = c.querySelector(".inc");

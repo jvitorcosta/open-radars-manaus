@@ -27,7 +27,7 @@ body:
   - type: input
     id: sentido
     attributes:
-      label: Sentido fiscalizado [Direction enforced]
+      label: Sentido fiscalizado [Enforced direction of travel]
       description: Para onde vai o carro que é fiscalizado, por exemplo "sentido Centro" [Where the enforced car is heading]
     validations:
       required: true
