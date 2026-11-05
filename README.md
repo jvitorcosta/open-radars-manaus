@@ -24,6 +24,8 @@
 
 ---
 
+**Status:** early
+
 > [!NOTE]
 > **Estado atual:** a versão `2026.11.0` é o ponto de partida do projeto, com um único ponto verificado.
 > Ela ainda não cobre a cidade. Os candidatos gerados a partir das fontes oficiais estão em verificação;
