@@ -25,8 +25,9 @@
 ---
 
 > [!NOTE]
-> **Estado atual:** nenhuma versão publicada. Os candidatos gerados a partir das fontes oficiais estão em
-> verificação; `data/radars.csv` recebe só os pontos já verificados. Detalhes em
+> **Estado atual:** a versão `2026.11.0` é o ponto de partida do projeto, com um único ponto verificado.
+> Ela ainda não cobre a cidade. Os candidatos gerados a partir das fontes oficiais estão em verificação;
+> `data/radars.csv` recebe só os pontos já verificados. Detalhes em
 > [Metodologia § 8](docs/methodology.md#8-estado-atual).
 
 ## O que é
@@ -76,7 +77,7 @@ O método completo, com parâmetros, fontes de erro e limitações, está em
 | CSV | [`radars.csv`](https://github.com/jvitorcosta/open-radars-manaus/releases/latest/download/radars.csv) |
 | GeoJSON | [`radars.geojson`](https://github.com/jvitorcosta/open-radars-manaus/releases/latest/download/radars.geojson) |
 
-Os links passam a funcionar com a primeira versão. As versões seguem o calendário (`AAAA.MM.N`, por
+As versões seguem o calendário (`AAAA.MM.N`, por
 exemplo `2026.11.0`), então dá para fixar uma; o que mudou em cada uma está no
 [CHANGELOG](CHANGELOG.md).
 
@@ -134,7 +135,8 @@ sinal algum e não é um detector de radar, equipamento proibido pelo Código de
 ## English
 
 > [!NOTE]
-> **Status:** no release yet. Candidates generated from the official sources are being verified;
+> **Status:** release `2026.11.0` is the project's kickoff, with a single verified point; it does not
+> cover the city yet. Candidates generated from the official sources are being verified;
 > `data/radars.csv` only receives verified points. See [Methodology § 8](docs/methodology.md#8-current-status).
 
 ### What it is
@@ -159,7 +161,7 @@ The full method, with parameters, error sources and limitations, is in
 
 [`radars.csv`](https://github.com/jvitorcosta/open-radars-manaus/releases/latest/download/radars.csv) ·
 [`radars.geojson`](https://github.com/jvitorcosta/open-radars-manaus/releases/latest/download/radars.geojson)
-(from the first release on). Calendar versions (`YYYY.MM.N`) can be pinned; changes are in the
+Calendar versions (`YYYY.MM.N`) can be pinned; changes are in the
 [CHANGELOG](CHANGELOG.md).
 
 ### Data format

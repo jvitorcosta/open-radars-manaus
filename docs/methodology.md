@@ -212,7 +212,9 @@ Por isso todo ponto publicado passa por verificação humana, e `checked` inform
 
 ## 8. Estado atual
 
-- `data/radars.csv` **não tem pontos publicados**. Nenhuma versão foi lançada.
+- A versão `2026.11.0` (2026-11-05) é o ponto de partida: publica **um ponto verificado**, `mao-0001`
+  (`speed`, Av. Cosme Ferreira, sentido oeste), observado em campo (`source` `car`) e ausente das
+  listas da IMMU. A cobertura da cidade é, portanto, mínima.
 - Um conjunto de candidatos foi gerado em 2026-11-04 a partir das fontes IMMU e dos Levantamentos
   Técnicos: 64 candidatos (36 `redlight`, 24 `speed`, 4 `bump`). Por método de posicionamento: 35 por
   cruzamento, 26 por endereço na via e 3 sem resultado; 13 sem `heading`. Nenhum foi verificado ainda.
@@ -390,7 +392,9 @@ non-cardinal directions ("towards the neighbourhood") are not converted and need
 
 ## 8. Current status
 
-`data/radars.csv` has **no published points** and no release exists. A candidate set was generated on
+Release `2026.11.0` (2026-11-05) is the kickoff: it publishes **one verified point**, `mao-0001` (`speed`,
+Av. Cosme Ferreira, westbound), observed in the field (`source` `car`) and absent from the IMMU lists, so
+city coverage is minimal. A candidate set was generated on
 2026-11-04 from the IMMU sources and technical surveys: 64 candidates (36 `redlight`, 24 `speed`, 4 `bump`);
 35 placed at a junction, 26 on the street, 3 with no result; 13 without a heading; none verified yet. It
 is a local working file in `build/`, outside version control, not published data.
