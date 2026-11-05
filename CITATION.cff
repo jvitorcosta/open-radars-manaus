@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "Se usar estes dados, cite-os assim e informe a versão. / If you use this data, please cite it as below and state the version."
+title: "open-radars-manaus: equipamentos fixos de fiscalização eletrônica de trânsito em Manaus"
+type: dataset
+authors:
+  - name: "open-radars-manaus contributors"
+repository-code: "https://github.com/jvitorcosta/open-radars-manaus"
+url: "https://github.com/jvitorcosta/open-radars-manaus"
+license: ODbL-1.0
+keywords:
+  - manaus
+  - radares
+  - dados-abertos
+  - traffic enforcement
+  - openstreetmap
