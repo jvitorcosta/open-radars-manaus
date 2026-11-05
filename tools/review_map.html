@@ -113,7 +113,8 @@ ITEMS.forEach(function (it, i) {
     '<label><input type="checkbox" class="conf"> <b>position is right</b> (dragged onto the road, or ticked by hand)</label>' +
     '<label><input type="checkbox" class="inc" checked> include</label>' +
     '<label class="reconf"><input type="checkbox" class="rc"> re-confirm today (saves it even if untouched)</label>';
-  var HOW = { crossing: "at the crossing", street: "somewhere on the street", none: "not found: city centre" };
+  var HOW = { crossing: "at the crossing", street: "somewhere on the street", none: "not found: city centre",
+              car: "marked from the car" };
   c.querySelector(".ttl").textContent = (i + 1) + ". " + (it.id || it.source || "") +
     (it.guess ? " (palpite / guess" + (HOW[it.how] ? ", " + HOW[it.how] : "") + ": drag it!)" : "");
   c.querySelector(".addr").textContent = (it.address || "") + (it.sentido ? " (sentido " + it.sentido + ")" : "");
