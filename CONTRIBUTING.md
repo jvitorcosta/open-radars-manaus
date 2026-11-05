@@ -48,7 +48,9 @@ Os pontos vêm do IMMU: a página dele e os pontos anunciados à imprensa, trans
 cruzamento ("Avenida A/Rua B") já aparece onde as duas ruas se encontram, antes da faixa, na pista do sentido.
 Pontos marcados no carro (o CarDeck abre uma issue por marca num repositório **privado** do dono, nunca
 neste) entram com `place --from marks --repo dono/nome`; depois de aplicados, `radars.py marks-close`
-fecha essas issues. O token vem de `GH_TOKEN` ou do `gh auth token`.
+fecha essas issues. O token vem de `GH_TOKEN` ou do `gh auth token`. Marcas feitas com o botão Lap de um
+relógio (a atividade, só para você, salva com as voltas e o trajeto em JSON) entram com
+`place --from laps --file atividade.json`: cada Lap vira um ponto, menos a última volta, que termina no Stop.
 Palpites automáticos só existem nesse mapa; só o que uma pessoa confirma entra no CSV.
 
 ## Revisão
@@ -78,4 +80,6 @@ the owner checks it and adds the row. To edit the file yourself (edit only the C
   `place --apply path/to/placed.json` merges the result into the CSV. Spots marked from the car
   (the CarDeck posts one issue per mark to the owner's **private** repo, never this one) load with
   `place --from marks --repo owner/name`; `radars.py marks-close` closes them once applied.
+  Spots marked with a watch's Lap button (the activity, kept private, saved as JSON with its laps and
+  track) load with `place --from laps --file activity.json`: each press is a point; the last lap ends at Stop.
 - **Review:** CI must pass and the owner reviews and merges.

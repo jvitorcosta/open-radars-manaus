@@ -16,6 +16,7 @@ import urllib.error
 
 import autoplace
 import geojson
+import laps
 import marks
 import radarlist
 from radarlist import CSV_PATH, GEOJSON_PATH, KINDS, RETIRED_PATH, ROOT
@@ -148,12 +149,18 @@ def cmd_place(a):
         print("added %d, updated %d" % (added, updated))
         return 0
     rows = radarlist.read_rows(CSV_PATH)
-    if a.src == "file":
+    if a.src in ("file", "laps"):
         if not a.file:
-            print("radars: --from file needs --file items.json", file=sys.stderr)
+            print("radars: --from %s needs --file %s" % (a.src, "items.json" if a.src == "file" else "activity.json"),
+                  file=sys.stderr)
             return 2
         with open(a.file, encoding="utf-8") as fh:
             new = json.load(fh)
+        if a.src == "laps":
+            new = laps.marks_from_laps(new)
+            if not new:
+                print("no Lap presses in %s (only the lap that ends at Stop)" % a.file)
+                return 0
     elif a.src == "marks":
         repo = marks.repo_name(a.repo)
         if not repo:
@@ -305,8 +312,9 @@ def main(argv=None):
     sub.add_parser("fetch").set_defaults(fn=cmd_fetch)
     sub.add_parser("check").set_defaults(fn=cmd_check)
     p = sub.add_parser("place")
-    p.add_argument("--from", dest="src", choices=("immu", "osm", "file", "marks"), default="immu")
-    p.add_argument("--file", metavar="items.json", help="with --from file: a JSON list of items")
+    p.add_argument("--from", dest="src", choices=("immu", "osm", "file", "marks", "laps"), default="immu")
+    p.add_argument("--file", metavar="items.json",
+                   help="with --from file: a JSON list of items; with --from laps: an activity's laps and track")
     p.add_argument("--repo", metavar="OWNER/NAME", help="with --from marks: the private marks repo (or MARKS_REPO)")
     p.add_argument("--apply", metavar="placed.json")
     p.add_argument("--no-serve", action="store_true", help="only write the page, do not start the local server")
