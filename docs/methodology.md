@@ -212,9 +212,11 @@ Por isso todo ponto publicado passa por verificação humana, e `checked` inform
 
 ## 8. Estado atual
 
-- A versão `2026.11.0` (2026-11-05) é o ponto de partida: publica **um ponto verificado**, `mao-0001`
-  (`speed`, Av. Cosme Ferreira, sentido oeste), observado em campo (`source` `car`) e ausente das
-  listas da IMMU. A cobertura da cidade é, portanto, mínima.
+- A versão `2026.11.0` (2026-11-05) foi o ponto de partida, com um ponto verificado (`mao-0001`).
+- A versão `2026.11.1` (2026-11-06) publica **sete pontos verificados** (`mao-0001` a `mao-0007`), todos
+  `speed` e observados em campo (`source` `car`), em cinco avenidas. Nenhum coincide com um candidato
+  da IMMU. As posições são as do momento em que o Lap foi pressionado; os limites são desconhecidos. A
+  cobertura da cidade é, portanto, mínima.
 - Um conjunto de candidatos foi gerado em 2026-11-04 a partir das fontes IMMU e dos Levantamentos
   Técnicos: 64 candidatos (36 `redlight`, 24 `speed`, 4 `bump`). Por método de posicionamento: 35 por
   cruzamento, 26 por endereço na via e 3 sem resultado; 13 sem `heading`. Nenhum foi verificado ainda.
@@ -392,9 +394,10 @@ non-cardinal directions ("towards the neighbourhood") are not converted and need
 
 ## 8. Current status
 
-Release `2026.11.0` (2026-11-05) is the kickoff: it publishes **one verified point**, `mao-0001` (`speed`,
-Av. Cosme Ferreira, westbound), observed in the field (`source` `car`) and absent from the IMMU lists, so
-city coverage is minimal. A candidate set was generated on
+Release `2026.11.0` (2026-11-05) was the kickoff, with one verified point (`mao-0001`). Release
+`2026.11.1` (2026-11-06) publishes **seven verified points** (`mao-0001` to `mao-0007`), all `speed` and
+observed in the field (`source` `car`) on five avenues; none coincides with an IMMU candidate. Positions are
+where Lap was pressed and limits are unknown, so city coverage is minimal. A candidate set was generated on
 2026-11-04 from the IMMU sources and technical surveys: 64 candidates (36 `redlight`, 24 `speed`, 4 `bump`);
 35 placed at a junction, 26 on the street, 3 with no result; 13 without a heading; none verified yet. It
 is a local working file in `build/`, outside version control, not published data.
