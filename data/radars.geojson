@@ -19,6 +19,120 @@
     "source": "car",
     "checked": "2026-11-05"
    }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -60.064411,
+     -3.027569
+    ]
+   },
+   "properties": {
+    "id": "mao-0002",
+    "kind": "speed",
+    "heading": 46,
+    "limit": null,
+    "label": "Av. do Turismo · Tarumã",
+    "source": "car",
+    "checked": "2026-11-06"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -60.033015,
+     -3.031414
+    ]
+   },
+   "properties": {
+    "id": "mao-0003",
+    "kind": "speed",
+    "heading": 122,
+    "limit": null,
+    "label": "Av. Santos Dumont · Tarumã",
+    "source": "car",
+    "checked": "2026-11-06"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -60.025244,
+     -3.052057
+    ]
+   },
+   "properties": {
+    "id": "mao-0004",
+    "kind": "speed",
+    "heading": 183,
+    "limit": null,
+    "label": "Av. Torquato Tapajós · Da Paz",
+    "source": "car",
+    "checked": "2026-11-06"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.97274,
+     -3.075962
+    ]
+   },
+   "properties": {
+    "id": "mao-0005",
+    "kind": "speed",
+    "heading": 20,
+    "limit": null,
+    "label": "Av. Cosme Ferreira · Coroado",
+    "source": "car",
+    "checked": "2026-11-06"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -60.025102,
+     -3.053035
+    ]
+   },
+   "properties": {
+    "id": "mao-0006",
+    "kind": "speed",
+    "heading": 3,
+    "limit": null,
+    "label": "Av. Torquato Tapajós · Flores",
+    "source": "car",
+    "checked": "2026-11-06"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -60.030951,
+     -3.032634
+    ]
+   },
+   "properties": {
+    "id": "mao-0007",
+    "kind": "speed",
+    "heading": 302,
+    "limit": null,
+    "label": "Av. Santos Dumont · Tarumã",
+    "source": "car",
+    "checked": "2026-11-06"
+   }
   }
  ]
 }
