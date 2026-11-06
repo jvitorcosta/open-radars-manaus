@@ -1,2 +1,8 @@
 id,kind,lat,lon,heading,limit,label,source,checked
 mao-0001,speed,-3.073859,-59.971050,275,,Av. Cosme Ferreira · São José Operário,car,2026-11-05
+mao-0002,speed,-3.027569,-60.064411,46,,Av. do Turismo · Tarumã,car,2026-11-06
+mao-0003,speed,-3.031414,-60.033015,122,,Av. Santos Dumont · Tarumã,car,2026-11-06
+mao-0004,speed,-3.052057,-60.025244,183,,Av. Torquato Tapajós · Da Paz,car,2026-11-06
+mao-0005,speed,-3.075962,-59.972740,20,,Av. Cosme Ferreira · Coroado,car,2026-11-06
+mao-0006,speed,-3.053035,-60.025102,3,,Av. Torquato Tapajós · Flores,car,2026-11-06
+mao-0007,speed,-3.032634,-60.030951,302,,Av. Santos Dumont · Tarumã,car,2026-11-06
