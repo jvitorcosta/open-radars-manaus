@@ -23,18 +23,17 @@ def build(rows):
 
 
 # The README's map: GitHub draws a ```geojson block as an interactive map. It sits between these markers
-# and is rebuilt from the rows like the GeoJSON file, with one feature per line and a pin colour per kind.
+# and is rebuilt from the rows like the GeoJSON file, one feature per line. (GitHub's map draws every pin
+# the same; it ignores simplestyle colours, so the kind is in the pin's popup instead.)
 MAP_START, MAP_END = "<!-- map:start -->", "<!-- map:end -->"
-MAP_COLOURS = {"speed": "#c0392b", "bump": "#e67e22", "redlight": "#7d3c98"}
 MAP_PROPERTIES = ("id", "kind", "label", "limit")
 
 
 def map_block(rows):
-    """The fenced ```geojson block for the README: the points with id, kind, label, limit and pin colour."""
+    """The fenced ```geojson block for the README: the points with id, kind, label and limit."""
     lines = []
     for r in sorted(rows, key=lambda r: r["id"]):
         props = {k: r[k] for k in MAP_PROPERTIES}
-        props["marker-color"] = MAP_COLOURS[r["kind"]]
         lines.append(json.dumps({"type": "Feature", "properties": props, "geometry": {
             "type": "Point", "coordinates": [round(r["lon"], 6), round(r["lat"], 6)]}}, ensure_ascii=False))
     return ("```geojson\n" + '{"type": "FeatureCollection", "features": [\n' + ",\n".join(lines)

@@ -40,13 +40,12 @@ def test_geojson_empty_list():
     assert doc["features"] == []
 
 
-def test_map_block_is_a_geojson_fence_with_pin_colours():
+def test_map_block_is_a_geojson_fence():
     block = gj.map_block([row(n=2, kind="redlight", limit=None), row(n=1)])
     assert block.startswith("```geojson\n") and block.endswith("\n```\n")
     doc = json.loads(block[len("```geojson\n"):-len("```\n")])
     assert [f["properties"]["id"] for f in doc["features"]] == ["mao-0001", "mao-0002"]
-    assert doc["features"][0]["properties"] == {"id": "mao-0001", "kind": "speed", "label": "A", "limit": 60,
-                                                "marker-color": "#c0392b"}
+    assert doc["features"][0]["properties"] == {"id": "mao-0001", "kind": "speed", "label": "A", "limit": 60}
     assert doc["features"][0]["geometry"]["coordinates"] == [-60.0, -3.1]
 
 

@@ -49,21 +49,21 @@ aplicativo, um estudo); o uso fica a critério de cada um.
 
 ## Mapa
 
-Os pontos publicados em `data/radars.csv`. A cor do pino indica o tipo: vermelho `speed`, laranja `bump`,
-roxo `redlight`. Clique num pino para ver id, via e limite. O mapa é gerado a partir do CSV por
-`python tools/radars.py geojson` e não deve ser editado à mão.
+Os pontos publicados em `data/radars.csv`. Clique num pino para ver id, tipo, via e limite; números
+agrupam pontos próximos. O mapa é gerado a partir do CSV por `python tools/radars.py geojson` e não deve
+ser editado à mão.
 
 <!-- map:start -->
 ```geojson
 {"type": "FeatureCollection", "features": [
-{"type": "Feature", "properties": {"id": "mao-0001", "kind": "speed", "label": "Av. Cosme Ferreira · São José Operário", "limit": 60, "marker-color": "#c0392b"}, "geometry": {"type": "Point", "coordinates": [-59.97105, -3.073859]}},
-{"type": "Feature", "properties": {"id": "mao-0002", "kind": "speed", "label": "Av. do Turismo · Tarumã", "limit": 60, "marker-color": "#c0392b"}, "geometry": {"type": "Point", "coordinates": [-60.064411, -3.027569]}},
-{"type": "Feature", "properties": {"id": "mao-0003", "kind": "speed", "label": "Av. Santos Dumont · Tarumã", "limit": 60, "marker-color": "#c0392b"}, "geometry": {"type": "Point", "coordinates": [-60.033015, -3.031414]}},
-{"type": "Feature", "properties": {"id": "mao-0004", "kind": "speed", "label": "Av. Torquato Tapajós · Da Paz", "limit": 60, "marker-color": "#c0392b"}, "geometry": {"type": "Point", "coordinates": [-60.025244, -3.052057]}},
-{"type": "Feature", "properties": {"id": "mao-0005", "kind": "speed", "label": "Av. Cosme Ferreira · Coroado", "limit": 60, "marker-color": "#c0392b"}, "geometry": {"type": "Point", "coordinates": [-59.97274, -3.075962]}},
-{"type": "Feature", "properties": {"id": "mao-0006", "kind": "speed", "label": "Av. Torquato Tapajós · Flores", "limit": 60, "marker-color": "#c0392b"}, "geometry": {"type": "Point", "coordinates": [-60.025102, -3.053035]}},
-{"type": "Feature", "properties": {"id": "mao-0007", "kind": "speed", "label": "Av. Santos Dumont · Tarumã", "limit": 60, "marker-color": "#c0392b"}, "geometry": {"type": "Point", "coordinates": [-60.030951, -3.032634]}},
-{"type": "Feature", "properties": {"id": "mao-0008", "kind": "speed", "label": "Av. Prof. Nilton Lins · Flores", "limit": 60, "marker-color": "#c0392b"}, "geometry": {"type": "Point", "coordinates": [-60.008138, -3.064716]}}
+{"type": "Feature", "properties": {"id": "mao-0001", "kind": "speed", "label": "Av. Cosme Ferreira · São José Operário", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-59.97105, -3.073859]}},
+{"type": "Feature", "properties": {"id": "mao-0002", "kind": "speed", "label": "Av. do Turismo · Tarumã", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.064411, -3.027569]}},
+{"type": "Feature", "properties": {"id": "mao-0003", "kind": "speed", "label": "Av. Santos Dumont · Tarumã", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.033015, -3.031414]}},
+{"type": "Feature", "properties": {"id": "mao-0004", "kind": "speed", "label": "Av. Torquato Tapajós · Da Paz", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.025244, -3.052057]}},
+{"type": "Feature", "properties": {"id": "mao-0005", "kind": "speed", "label": "Av. Cosme Ferreira · Coroado", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-59.97274, -3.075962]}},
+{"type": "Feature", "properties": {"id": "mao-0006", "kind": "speed", "label": "Av. Torquato Tapajós · Flores", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.025102, -3.053035]}},
+{"type": "Feature", "properties": {"id": "mao-0007", "kind": "speed", "label": "Av. Santos Dumont · Tarumã", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.030951, -3.032634]}},
+{"type": "Feature", "properties": {"id": "mao-0008", "kind": "speed", "label": "Av. Prof. Nilton Lins · Flores", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.008138, -3.064716]}}
 ]}
 ```
 <!-- map:end -->
@@ -173,8 +173,8 @@ measurement). Fixed devices on public roads only; how you use the data is up to 
 
 ### Map
 
-The [map above](#mapa) shows the published points: red pins are `speed`, orange `bump`, purple
-`redlight`. It is generated from the CSV by `python tools/radars.py geojson`; don't edit it by hand.
+The [map above](#mapa) shows the published points; click a pin for its id, kind, road and limit. It is
+generated from the CSV by `python tools/radars.py geojson`; don't edit it by hand.
 
 ### How the data is produced
 
