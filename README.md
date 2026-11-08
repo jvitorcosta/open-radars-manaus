@@ -53,28 +53,13 @@ aplicativo, um estudo); o uso fica a critério de cada um.
   <img src="docs/map.svg" width="800" alt="Mapa de Manaus com os pontos verificados, um ícone por tipo e uma seta no sentido fiscalizado">
 </p>
 
-Os pontos publicados em `data/radars.csv`: o ícone indica o tipo (placa com o limite para `speed`,
-triângulo para `bump`, semáforo para `redlight`) e a seta, o sentido fiscalizado. A legenda traz a
-contagem por tipo, a data da verificação mais recente e quantos endereços das listas oficiais ainda
-aguardam verificação. Abaixo, o mesmo conjunto num mapa interativo do GitHub, que permite aproximar;
-os círculos com número agrupam pontos próximos. Os dois mapas são gerados a partir do CSV por
-`python tools/radars.py geojson` e não devem ser editados à mão. Os detalhes de cada ponto estão no
+Os pontos publicados em `data/radars.csv` sobre um mapa de Manaus feito com dados do OpenStreetMap:
+o Rio Negro e os igarapés, as áreas verdes, as avenidas principais com o nome e os bairros. O ícone
+indica o tipo (placa com o limite para `speed`, triângulo para `bump`, semáforo para `redlight`) e a
+seta, o sentido fiscalizado. A legenda traz a contagem por tipo, a data da verificação mais recente e
+quantos endereços das listas oficiais ainda aguardam verificação. O mapa é gerado a partir do CSV por
+`python tools/radars.py geojson` e não deve ser editado à mão. Os detalhes de cada ponto estão no
 [CSV](data/radars.csv) e no [GeoJSON](data/radars.geojson).
-
-<!-- map:start -->
-```geojson
-{"type": "FeatureCollection", "features": [
-{"type": "Feature", "properties": {"id": "mao-0001", "kind": "speed", "label": "Av. Cosme Ferreira · São José Operário", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-59.97105, -3.073859]}},
-{"type": "Feature", "properties": {"id": "mao-0002", "kind": "speed", "label": "Av. do Turismo · Tarumã", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.064411, -3.027569]}},
-{"type": "Feature", "properties": {"id": "mao-0003", "kind": "speed", "label": "Av. Santos Dumont · Tarumã", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.033015, -3.031414]}},
-{"type": "Feature", "properties": {"id": "mao-0004", "kind": "speed", "label": "Av. Torquato Tapajós · Da Paz", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.025244, -3.052057]}},
-{"type": "Feature", "properties": {"id": "mao-0005", "kind": "speed", "label": "Av. Cosme Ferreira · Coroado", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-59.97274, -3.075962]}},
-{"type": "Feature", "properties": {"id": "mao-0006", "kind": "speed", "label": "Av. Torquato Tapajós · Flores", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.025102, -3.053035]}},
-{"type": "Feature", "properties": {"id": "mao-0007", "kind": "speed", "label": "Av. Santos Dumont · Tarumã", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.030951, -3.032634]}},
-{"type": "Feature", "properties": {"id": "mao-0008", "kind": "speed", "label": "Av. Prof. Nilton Lins · Flores", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.008138, -3.064716]}}
-]}
-```
-<!-- map:end -->
 
 ## Como os dados são produzidos
 
@@ -181,12 +166,13 @@ measurement). Fixed devices on public roads only; how you use the data is up to 
 
 ### Map
 
-The [maps above](#mapa) show the published points. In the static one, the icon gives the kind (a
-limit sign for `speed`, a triangle for `bump`, a traffic light for `redlight`) and the arrow the enforced
-direction; the legend has counts per kind, the latest check date and how many official-list addresses
-are still unverified. The interactive one zooms; numbered circles group nearby points. Both are
-generated from the CSV by `python tools/radars.py geojson`; don't edit them by hand. Each point's
-details are in the CSV and the GeoJSON.
+The [map above](#mapa) shows the published points over a Manaus base map from OpenStreetMap data:
+the Rio Negro and its streams, green areas, the main avenues by name and the neighbourhoods. The icon
+gives the kind (a limit sign for `speed`, a triangle for `bump`, a traffic light for `redlight`) and the
+arrow the enforced direction; the legend has counts per kind, the latest check date and how many
+official-list addresses are still unverified. It is generated from the CSV by
+`python tools/radars.py geojson`; don't edit it by hand. Each point's details are in the CSV and the
+GeoJSON.
 
 ### How the data is produced
 

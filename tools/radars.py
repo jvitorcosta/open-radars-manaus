@@ -13,6 +13,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 import urllib.error
 
 import autoplace
@@ -27,8 +28,8 @@ from sources import diff, fetch_immu, fetch_osm
 TEMPLATE = os.path.join(ROOT, "tools", "review_map.html")
 PLACE_HTML = os.path.join(ROOT, "build", "review_map.html")
 DIST = os.path.join(ROOT, "dist")
-README_PATH = os.path.join(ROOT, "README.md")
 MAP_SVG = os.path.join(ROOT, "docs", "map.svg")
+MAP_OSM = os.path.join(ROOT, "build", "map-osm.json")
 LISTS_DIR = os.path.join(ROOT, "tools", "lists")
 APPLY_CMD = "python tools/radars.py place --apply caminho/para/placed.json"
 VERSION_RE = r"\d{4}\.(0[1-9]|1[0-2])\.\d+"
@@ -212,13 +213,6 @@ def cmd_place(a):
 # --- validate and geojson ------------------------------------------------------------------------
 
 
-def _read_readme():
-    if not os.path.isfile(README_PATH):
-        return None
-    with open(README_PATH, encoding="utf-8", newline="") as fh:
-        return fh.read()
-
-
 def _listed():
     """Addresses in the transcribed official lists (tools/lists/immu-*.csv), for the map's legend."""
     n = 0
@@ -228,16 +222,73 @@ def _listed():
     return n
 
 
-def _map_svg(rows, roads=None):
-    """docs/map.svg for rows, with these roads or else the ones already in the file; None without either."""
-    if roads is None:
+def _map_svg(rows, base=None):
+    """docs/map.svg for rows, with this base map or else the one already in the file; None without either."""
+    if base is None:
         if not os.path.isfile(MAP_SVG):
             return None
         with open(MAP_SVG, encoding="utf-8", newline="") as fh:
-            roads = mapsvg.roads_of(fh.read())
-        if roads is None:
+            base = mapsvg.base_of(fh.read())
+        if base is None:
             return None
-    return mapsvg.build(rows, roads, _listed())
+    return mapsvg.build(rows, base, _listed())
+
+
+MAP_AREAS = ('nwr["natural"="water"]', 'nwr["waterway"="riverbank"]', 'nwr["leisure"="park"]',
+             'nwr["leisure"="nature_reserve"]', 'nwr["landuse"="forest"]', 'nwr["natural"="wood"]',
+             'nwr["aeroway"="aerodrome"]')
+MAP_MAX_SPAN = 5.0   # square degrees: leaves out the Amazon's own polygon, kept are the Rio Negro's
+
+
+def _osm_base(rows):
+    """The base map from OpenStreetMap: roads (build/roads.json), then water, green areas, the airport
+    and neighbourhood names (build/map-osm.json, kept as long as the roads)."""
+    try:
+        if time.time() - os.path.getmtime(MAP_OSM) < autoplace.ROADS_MAX_AGE:
+            with open(MAP_OSM, encoding="utf-8") as fh:
+                cached = json.load(fh)
+            return _base_from(rows, cached["areas"], cached["places"])
+    except (OSError, ValueError, KeyError):
+        pass
+    areas, places = _fetch_map_osm()
+    os.makedirs(os.path.dirname(MAP_OSM), exist_ok=True)
+    with open(MAP_OSM, "w", encoding="utf-8") as fh:
+        json.dump({"areas": areas, "places": places}, fh)
+    return _base_from(rows, areas, places)
+
+
+def _base_from(rows, areas, places):
+    groups = {"water": [], "green": [], "aero": []}
+    for e in areas:
+        t = e.get("tags", {})
+        if t.get("natural") == "water" or t.get("waterway") == "riverbank":
+            groups["water"].append(e)
+        elif t.get("aeroway") == "aerodrome":
+            groups["aero"].append(e)
+        else:
+            groups["green"].append(e)
+    keep_out = [mapsvg.xy(r["lat"], r["lon"]) for r in rows]
+    return mapsvg.base_markup(autoplace.road_network(), groups["water"], groups["green"], groups["aero"],
+                              places, keep_out)
+
+
+def _fetch_map_osm():
+    """Water, green areas and the airport (ways, and relations whole: they are clipped while drawing),
+    and the neighbourhood names, in the map's box."""
+    box = "(%g,%g,%g,%g)" % (mapsvg.SOUTH, mapsvg.WEST, mapsvg.NORTH, mapsvg.EAST)
+    union = "".join(a.replace("nwr", "way") + box + ";" for a in MAP_AREAS)
+    ways = autoplace._overpass("[out:json][timeout:180];(%s);out geom;" % union, timeout=200)
+    union = "".join(a.replace("nwr", "relation") + box + ";" for a in MAP_AREAS)
+    rels = autoplace._overpass("[out:json][timeout:180];(%s);out ids bb;" % union, timeout=200)
+    keep = [str(r["id"]) for r in rels if r.get("bounds") and
+            (r["bounds"]["maxlat"] - r["bounds"]["minlat"]) * (r["bounds"]["maxlon"] - r["bounds"]["minlon"])
+            < MAP_MAX_SPAN]
+    if keep:
+        ways += autoplace._overpass("[out:json][timeout:180];relation(id:%s);out geom;" % ",".join(keep),
+                                    timeout=200)
+    places = [{"name": e["tags"]["name"], "lat": e["lat"], "lon": e["lon"]} for e in autoplace._overpass(
+        '[out:json][timeout:60];node["place"="suburb"]%s;out;' % box, timeout=90) if e.get("tags", {}).get("name")]
+    return ways, places
 
 
 def _write_map(svg):
@@ -247,15 +298,10 @@ def _write_map(svg):
 
 
 def write_geojson():
-    """data/radars.geojson, the README's map and docs/map.svg, all from data/radars.csv."""
+    """data/radars.geojson and docs/map.svg, both from data/radars.csv."""
     rows = radarlist.read_rows(CSV_PATH)
     with open(GEOJSON_PATH, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(geojson.build(rows))
-    readme = _read_readme()
-    new = geojson.with_map(readme, rows) if readme is not None else None
-    if new is not None and new != readme:
-        with open(README_PATH, "w", encoding="utf-8", newline="") as fh:
-            fh.write(new)
     svg = _map_svg(rows)
     if svg is not None:
         _write_map(svg)
@@ -263,16 +309,16 @@ def write_geojson():
 
 def cmd_geojson(_a):
     write_geojson()
-    print("wrote data/radars.geojson, the README map and docs/map.svg")
+    print("wrote data/radars.geojson and docs/map.svg")
     return 0
 
 
 def cmd_map(a):
-    """Redraw docs/map.svg; --roads also redraws its roads from OpenStreetMap (build/roads.json)."""
-    roads = mapsvg.roads_markup(autoplace.road_network()) if a.roads else None
-    svg = _map_svg(radarlist.read_rows(CSV_PATH), roads)
+    """Redraw docs/map.svg; --base also redraws its base map from OpenStreetMap."""
+    rows = radarlist.read_rows(CSV_PATH)
+    svg = _map_svg(rows, _osm_base(rows) if a.base else None)
     if svg is None:
-        print("radars: docs/map.svg has no roads yet: run python tools/radars.py map --roads", file=sys.stderr)
+        print("radars: docs/map.svg has no base map yet: run python tools/radars.py map --base", file=sys.stderr)
         return 1
     _write_map(svg)
     print("wrote docs/map.svg")
@@ -294,9 +340,6 @@ def cmd_validate(a):
                                       _ids_of(base) if base else set())
         if not geojson.matches(CSV_PATH, GEOJSON_PATH):
             errors.append("data/radars.geojson is out of date: run python tools/radars.py geojson")
-        readme = _read_readme()
-        if readme is not None and geojson.with_map(readme, radarlist.read_rows(CSV_PATH)) not in (None, readme):
-            errors.append("the README map is out of date: run python tools/radars.py geojson")
         svg = _map_svg(radarlist.read_rows(CSV_PATH))
         if svg is not None:
             with open(MAP_SVG, encoding="utf-8", newline="") as fh:
@@ -392,8 +435,8 @@ def main(argv=None):
     p.add_argument("--base", metavar="REF", help="git ref to compare ids with: removed ids must be in retired.txt")
     p.set_defaults(fn=cmd_validate)
     sub.add_parser("geojson").set_defaults(fn=cmd_geojson)
-    p = sub.add_parser("map", help="redraw docs/map.svg (--roads: its roads too, from OpenStreetMap)")
-    p.add_argument("--roads", action="store_true")
+    p = sub.add_parser("map", help="redraw docs/map.svg (--base: its base map too, from OpenStreetMap)")
+    p.add_argument("--base", action="store_true")
     p.set_defaults(fn=cmd_map)
     p = sub.add_parser("marks-close", help="close the car marks' issues once their points are applied")
     p.add_argument("--repo", metavar="OWNER/NAME", help="the private marks repo (or MARKS_REPO)")
