@@ -5,6 +5,7 @@ python tools/radars.py <command>.
 """
 import argparse
 import functools
+import glob
 import http.server
 import json
 import os
@@ -17,6 +18,7 @@ import urllib.error
 import autoplace
 import geojson
 import laps
+import mapsvg
 import marks
 import radarlist
 from radarlist import CSV_PATH, GEOJSON_PATH, KINDS, RETIRED_PATH, ROOT
@@ -26,6 +28,8 @@ TEMPLATE = os.path.join(ROOT, "tools", "review_map.html")
 PLACE_HTML = os.path.join(ROOT, "build", "review_map.html")
 DIST = os.path.join(ROOT, "dist")
 README_PATH = os.path.join(ROOT, "README.md")
+MAP_SVG = os.path.join(ROOT, "docs", "map.svg")
+LISTS_DIR = os.path.join(ROOT, "tools", "lists")
 APPLY_CMD = "python tools/radars.py place --apply caminho/para/placed.json"
 VERSION_RE = r"\d{4}\.(0[1-9]|1[0-2])\.\d+"
 
@@ -215,8 +219,35 @@ def _read_readme():
         return fh.read()
 
 
+def _listed():
+    """Addresses in the transcribed official lists (tools/lists/immu-*.csv), for the map's legend."""
+    n = 0
+    for path in sorted(glob.glob(os.path.join(LISTS_DIR, "immu-*.csv"))):
+        with open(path, encoding="utf-8") as fh:
+            n += max(0, sum(1 for line in fh if line.strip()) - 1)
+    return n
+
+
+def _map_svg(rows, roads=None):
+    """docs/map.svg for rows, with these roads or else the ones already in the file; None without either."""
+    if roads is None:
+        if not os.path.isfile(MAP_SVG):
+            return None
+        with open(MAP_SVG, encoding="utf-8", newline="") as fh:
+            roads = mapsvg.roads_of(fh.read())
+        if roads is None:
+            return None
+    return mapsvg.build(rows, roads, _listed())
+
+
+def _write_map(svg):
+    os.makedirs(os.path.dirname(MAP_SVG), exist_ok=True)
+    with open(MAP_SVG, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(svg)
+
+
 def write_geojson():
-    """data/radars.geojson and the README's map, both from data/radars.csv."""
+    """data/radars.geojson, the README's map and docs/map.svg, all from data/radars.csv."""
     rows = radarlist.read_rows(CSV_PATH)
     with open(GEOJSON_PATH, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(geojson.build(rows))
@@ -225,11 +256,26 @@ def write_geojson():
     if new is not None and new != readme:
         with open(README_PATH, "w", encoding="utf-8", newline="") as fh:
             fh.write(new)
+    svg = _map_svg(rows)
+    if svg is not None:
+        _write_map(svg)
 
 
 def cmd_geojson(_a):
     write_geojson()
-    print("wrote data/radars.geojson and the README map")
+    print("wrote data/radars.geojson, the README map and docs/map.svg")
+    return 0
+
+
+def cmd_map(a):
+    """Redraw docs/map.svg; --roads also redraws its roads from OpenStreetMap (build/roads.json)."""
+    roads = mapsvg.roads_markup(autoplace.road_network()) if a.roads else None
+    svg = _map_svg(radarlist.read_rows(CSV_PATH), roads)
+    if svg is None:
+        print("radars: docs/map.svg has no roads yet: run python tools/radars.py map --roads", file=sys.stderr)
+        return 1
+    _write_map(svg)
+    print("wrote docs/map.svg")
     return 0
 
 
@@ -251,6 +297,11 @@ def cmd_validate(a):
         readme = _read_readme()
         if readme is not None and geojson.with_map(readme, radarlist.read_rows(CSV_PATH)) not in (None, readme):
             errors.append("the README map is out of date: run python tools/radars.py geojson")
+        svg = _map_svg(radarlist.read_rows(CSV_PATH))
+        if svg is not None:
+            with open(MAP_SVG, encoding="utf-8", newline="") as fh:
+                if fh.read() != svg:
+                    errors.append("docs/map.svg is out of date: run python tools/radars.py geojson")
     for w in warnings:
         print("warning: " + w)
     for e in errors:
@@ -341,6 +392,9 @@ def main(argv=None):
     p.add_argument("--base", metavar="REF", help="git ref to compare ids with: removed ids must be in retired.txt")
     p.set_defaults(fn=cmd_validate)
     sub.add_parser("geojson").set_defaults(fn=cmd_geojson)
+    p = sub.add_parser("map", help="redraw docs/map.svg (--roads: its roads too, from OpenStreetMap)")
+    p.add_argument("--roads", action="store_true")
+    p.set_defaults(fn=cmd_map)
     p = sub.add_parser("marks-close", help="close the car marks' issues once their points are applied")
     p.add_argument("--repo", metavar="OWNER/NAME", help="the private marks repo (or MARKS_REPO)")
     p.set_defaults(fn=cmd_marks_close)

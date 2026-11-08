@@ -6,6 +6,7 @@ import pytest
 
 import autoplace
 import geojson
+import mapsvg
 import radars
 import radarlist
 
@@ -34,6 +35,8 @@ def repo(tmp_path, monkeypatch):
     monkeypatch.setattr(radars, "PLACE_HTML", str(tmp_path / "build" / "review_map.html"))
     monkeypatch.setattr(radars, "DIST", str(tmp_path / "dist"))
     monkeypatch.setattr(radars, "README_PATH", str(tmp_path / "README.md"))
+    monkeypatch.setattr(radars, "MAP_SVG", str(tmp_path / "docs" / "map.svg"))
+    monkeypatch.setattr(radars, "LISTS_DIR", str(tmp_path / "lists"))
     write(radars.RETIRED_PATH, "# id,date,reason\n")
     return tmp_path
 
@@ -136,6 +139,20 @@ def test_geojson_rebuilds_the_readme_map_and_validate_checks_it(repo, capsys):
     assert radars.main(["geojson"]) == 0
     with open(radars.README_PATH, encoding="utf-8") as fh:
         assert "```geojson" in fh.read()
+    assert radars.main(["validate"]) == 0
+
+
+def test_geojson_redraws_the_svg_map_keeping_its_roads(repo, capsys):
+    set_list(repo, ROW1)
+    assert radars.main(["map"]) == 1                      # no map with roads yet
+    write(radars.MAP_SVG, mapsvg.build([], '<path class="road" d="M0 0 L1 1"/>', 0))
+    write(str(repo / "lists" / "immu-2026-02.csv"), "kind,street,cross,district,sentido,limit,note\nspeed,A,,B,Norte,,\n")
+    assert radars.main(["validate"]) == 1
+    assert "docs/map.svg is out of date" in capsys.readouterr().out
+    assert radars.main(["geojson"]) == 0
+    with open(radars.MAP_SVG, encoding="utf-8") as fh:
+        svg = fh.read()
+    assert "Pontos verificados: 1" in svg and "1 endereços" in svg and 'd="M0 0 L1 1"' in svg
     assert radars.main(["validate"]) == 0
 
 
