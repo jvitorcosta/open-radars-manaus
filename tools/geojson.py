@@ -24,7 +24,7 @@ def build(rows):
 
 # The README's map: GitHub draws a ```geojson block as an interactive map. It sits between these markers
 # and is rebuilt from the rows like the GeoJSON file, one feature per line. (GitHub's map draws every pin
-# the same; it ignores simplestyle colours, so the kind is in the pin's popup instead.)
+# the same; it ignores simplestyle colours.)
 MAP_START, MAP_END = "<!-- map:start -->", "<!-- map:end -->"
 MAP_PROPERTIES = ("id", "kind", "label", "limit")
 

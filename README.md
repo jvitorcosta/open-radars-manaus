@@ -49,9 +49,9 @@ aplicativo, um estudo); o uso fica a critério de cada um.
 
 ## Mapa
 
-Os pontos publicados em `data/radars.csv`. Clique num pino para ver id, tipo, via e limite; números
-agrupam pontos próximos. O mapa é gerado a partir do CSV por `python tools/radars.py geojson` e não deve
-ser editado à mão.
+Os pontos publicados em `data/radars.csv`; os círculos com número agrupam pontos próximos. O mapa é
+gerado a partir do CSV por `python tools/radars.py geojson` e não deve ser editado à mão. Os detalhes de
+cada ponto estão no [CSV](data/radars.csv) e no [GeoJSON](data/radars.geojson).
 
 <!-- map:start -->
 ```geojson
@@ -173,8 +173,9 @@ measurement). Fixed devices on public roads only; how you use the data is up to 
 
 ### Map
 
-The [map above](#mapa) shows the published points; click a pin for its id, kind, road and limit. It is
-generated from the CSV by `python tools/radars.py geojson`; don't edit it by hand.
+The [map above](#mapa) shows the published points; numbered circles group nearby points. It is
+generated from the CSV by `python tools/radars.py geojson`; don't edit it by hand. Each point's details
+are in the CSV and the GeoJSON.
 
 ### How the data is produced
 
