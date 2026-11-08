@@ -213,10 +213,12 @@ Por isso todo ponto publicado passa por verificação humana, e `checked` inform
 ## 8. Estado atual
 
 - A versão `2026.11.0` (2026-11-05) foi o ponto de partida, com um ponto verificado (`mao-0001`).
-- A versão `2026.11.1` (2026-11-06) publica **sete pontos verificados** (`mao-0001` a `mao-0007`), todos
-  `speed` e observados em campo (`source` `car`), em cinco avenidas. Nenhum coincide com um candidato
-  da IMMU. As posições são as do momento em que o Lap foi pressionado; os limites são desconhecidos. A
-  cobertura da cidade é, portanto, mínima.
+- A versão `2026.11.1` (2026-11-06) publicou sete pontos verificados (`mao-0001` a `mao-0007`).
+- A versão `2026.11.2` (2026-11-08) publica **oito pontos verificados** (`mao-0001` a `mao-0008`), todos
+  `speed`, com limite de 60 km/h observado em campo (`source` `car`), em seis avenidas. As posições são
+  as do momento em que o Lap foi pressionado. `mao-0008` fica a cerca de 1 km do candidato IMMU da Av.
+  Prof. Nilton Lins e pode ser o mesmo equipamento; os demais não coincidem com candidatos. A cobertura
+  da cidade é, portanto, mínima.
 - Um conjunto de candidatos foi gerado em 2026-11-04 a partir das fontes IMMU e dos Levantamentos
   Técnicos: 64 candidatos (36 `redlight`, 24 `speed`, 4 `bump`). Por método de posicionamento: 35 por
   cruzamento, 26 por endereço na via e 3 sem resultado; 13 sem `heading`. Nenhum foi verificado ainda.
@@ -395,9 +397,11 @@ non-cardinal directions ("towards the neighbourhood") are not converted and need
 ## 8. Current status
 
 Release `2026.11.0` (2026-11-05) was the kickoff, with one verified point (`mao-0001`). Release
-`2026.11.1` (2026-11-06) publishes **seven verified points** (`mao-0001` to `mao-0007`), all `speed` and
-observed in the field (`source` `car`) on five avenues; none coincides with an IMMU candidate. Positions are
-where Lap was pressed and limits are unknown, so city coverage is minimal. A candidate set was generated on
+`2026.11.1` (2026-11-06) published seven. Release `2026.11.2` (2026-11-08) publishes **eight verified
+points** (`mao-0001` to `mao-0008`), all `speed` with a 60 km/h limit observed in the field (`source`
+`car`), on six avenues. Positions are where Lap was pressed. `mao-0008` lies about 1 km from the IMMU
+candidate on Av. Prof. Nilton Lins and may be the same device; the others match no candidate. City
+coverage is minimal. A candidate set was generated on
 2026-11-04 from the IMMU sources and technical surveys: 64 candidates (36 `redlight`, 24 `speed`, 4 `bump`);
 35 placed at a junction, 26 on the street, 3 with no result; 13 without a heading; none verified yet. It
 is a local working file in `build/`, outside version control, not published data.
