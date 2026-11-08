@@ -14,10 +14,10 @@
     "id": "mao-0001",
     "kind": "speed",
     "heading": 275,
-    "limit": null,
+    "limit": 60,
     "label": "Av. Cosme Ferreira · São José Operário",
     "source": "car",
-    "checked": "2026-11-05"
+    "checked": "2026-11-08"
    }
   },
   {
@@ -33,10 +33,10 @@
     "id": "mao-0002",
     "kind": "speed",
     "heading": 46,
-    "limit": null,
+    "limit": 60,
     "label": "Av. do Turismo · Tarumã",
     "source": "car",
-    "checked": "2026-11-06"
+    "checked": "2026-11-08"
    }
   },
   {
@@ -52,10 +52,10 @@
     "id": "mao-0003",
     "kind": "speed",
     "heading": 122,
-    "limit": null,
+    "limit": 60,
     "label": "Av. Santos Dumont · Tarumã",
     "source": "car",
-    "checked": "2026-11-06"
+    "checked": "2026-11-08"
    }
   },
   {
@@ -71,10 +71,10 @@
     "id": "mao-0004",
     "kind": "speed",
     "heading": 183,
-    "limit": null,
+    "limit": 60,
     "label": "Av. Torquato Tapajós · Da Paz",
     "source": "car",
-    "checked": "2026-11-06"
+    "checked": "2026-11-08"
    }
   },
   {
@@ -90,10 +90,10 @@
     "id": "mao-0005",
     "kind": "speed",
     "heading": 20,
-    "limit": null,
+    "limit": 60,
     "label": "Av. Cosme Ferreira · Coroado",
     "source": "car",
-    "checked": "2026-11-06"
+    "checked": "2026-11-08"
    }
   },
   {
@@ -109,10 +109,10 @@
     "id": "mao-0006",
     "kind": "speed",
     "heading": 3,
-    "limit": null,
+    "limit": 60,
     "label": "Av. Torquato Tapajós · Flores",
     "source": "car",
-    "checked": "2026-11-06"
+    "checked": "2026-11-08"
    }
   },
   {
@@ -128,10 +128,29 @@
     "id": "mao-0007",
     "kind": "speed",
     "heading": 302,
-    "limit": null,
+    "limit": 60,
     "label": "Av. Santos Dumont · Tarumã",
     "source": "car",
-    "checked": "2026-11-06"
+    "checked": "2026-11-08"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -60.008138,
+     -3.064716
+    ]
+   },
+   "properties": {
+    "id": "mao-0008",
+    "kind": "speed",
+    "heading": 67,
+    "limit": 60,
+    "label": "Av. Prof. Nilton Lins · Flores",
+    "source": "car",
+    "checked": "2026-11-08"
    }
   }
  ]
