@@ -8,6 +8,6 @@
 - [ ] Cada ponto novo ou alterado foi verificado e tem `checked` com a data da verificação / Each new or changed point was verified and `checked` holds that date
 - [ ] Nenhuma coordenada copiada de mapas proprietários (Google Maps, Street View) / No coordinates copied from proprietary maps
 - [ ] Sem dados pessoais (sem placas nem rostos, sem trajetos de GPS) / No personal data
-- [ ] GeoJSON e mapas do README regenerados com `python tools/radars.py geojson` / GeoJSON and README maps regenerated
+- [ ] GeoJSON e mapa (`docs/map.svg`) regenerados com `python tools/radars.py geojson` / GeoJSON and map (`docs/map.svg`) regenerated
 - [ ] `python tools/radars.py validate` passa / passes (depois do geojson / after geojson)
 - [ ] `python -m pytest -q` passa / passes
