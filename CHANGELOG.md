@@ -7,6 +7,21 @@ changed and removed, by id.
 
 ## [Não publicado / Unreleased]
 
+## [2026.11.2] - 2026-11-08
+
+Um novo medidor de velocidade e o limite de 60 km/h nos sete anteriores, observados em campo. Ainda não
+cobre a cidade. / One new speed camera and the 60 km/h limit on the previous seven, observed in the
+field. Still no city coverage.
+
+### Adicionados / Added
+
+- `mao-0008`: Av. Prof. Nilton Lins · Flores, heading 67°, 60 km/h. Possivelmente o candidato IMMU
+  "Av. Prof. Nilton Lins 900" / possibly the IMMU candidate on that avenue.
+
+### Alterados / Changed
+
+- `mao-0001` a / to `mao-0007`: limite / limit 60 km/h; `checked` 2026-11-08.
+
 ## [2026.11.1] - 2026-11-06
 
 Seis medidores de velocidade observados em campo. Ainda não cobre a cidade. / Six speed cameras observed
@@ -36,5 +51,6 @@ sources are still being verified.
 - `mao-0001`: `speed`, Av. Cosme Ferreira · São José Operário, sentido oeste / westbound (heading 275°),
   limite desconhecido / limit unknown. Observação em campo / field observation (`car`).
 
+[2026.11.2]: https://github.com/jvitorcosta/open-radars-manaus/releases/tag/2026.11.2
 [2026.11.1]: https://github.com/jvitorcosta/open-radars-manaus/releases/tag/2026.11.1
 [2026.11.0]: https://github.com/jvitorcosta/open-radars-manaus/releases/tag/2026.11.0

@@ -27,7 +27,7 @@
 **Status:** early
 
 > [!NOTE]
-> **Estado atual:** a versão `2026.11.1` tem sete pontos verificados, todos observados em campo. O projeto
+> **Estado atual:** a versão `2026.11.2` tem oito pontos verificados, todos observados em campo. O projeto
 > está no começo e ainda não cobre a cidade. Os candidatos gerados a partir das fontes oficiais estão em verificação;
 > `data/radars.csv` recebe só os pontos já verificados. Detalhes em
 > [Metodologia § 8](docs/methodology.md#8-estado-atual).
@@ -137,7 +137,7 @@ sinal algum e não é um detector de radar, equipamento proibido pelo Código de
 ## English
 
 > [!NOTE]
-> **Status:** release `2026.11.1` has seven verified points, all observed in the field. The project is
+> **Status:** release `2026.11.2` has eight verified points, all observed in the field. The project is
 > just starting and does not cover the city yet. Candidates generated from the official sources are being verified;
 > `data/radars.csv` only receives verified points. See [Methodology § 8](docs/methodology.md#8-current-status).
 
