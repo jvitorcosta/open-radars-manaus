@@ -15,6 +15,7 @@
 
 <p align="center">
   <a href="#o-que-é">O que é</a> ·
+  <a href="#mapa">Mapa</a> ·
   <a href="#como-os-dados-são-produzidos">Método</a> ·
   <a href="#baixar">Baixar</a> ·
   <a href="#formato-dos-dados">Formato</a> ·
@@ -45,6 +46,27 @@ sentido de tráfego fiscalizado, limite de velocidade e data da última verifica
 
 Só entram equipamentos **fixos** em via pública. Os dados servem a quem quiser usá-los (um mapa, um
 aplicativo, um estudo); o uso fica a critério de cada um.
+
+## Mapa
+
+Os pontos publicados em `data/radars.csv`; os círculos com número agrupam pontos próximos. O mapa é
+gerado a partir do CSV por `python tools/radars.py geojson` e não deve ser editado à mão. Os detalhes de
+cada ponto estão no [CSV](data/radars.csv) e no [GeoJSON](data/radars.geojson).
+
+<!-- map:start -->
+```geojson
+{"type": "FeatureCollection", "features": [
+{"type": "Feature", "properties": {"id": "mao-0001", "kind": "speed", "label": "Av. Cosme Ferreira · São José Operário", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-59.97105, -3.073859]}},
+{"type": "Feature", "properties": {"id": "mao-0002", "kind": "speed", "label": "Av. do Turismo · Tarumã", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.064411, -3.027569]}},
+{"type": "Feature", "properties": {"id": "mao-0003", "kind": "speed", "label": "Av. Santos Dumont · Tarumã", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.033015, -3.031414]}},
+{"type": "Feature", "properties": {"id": "mao-0004", "kind": "speed", "label": "Av. Torquato Tapajós · Da Paz", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.025244, -3.052057]}},
+{"type": "Feature", "properties": {"id": "mao-0005", "kind": "speed", "label": "Av. Cosme Ferreira · Coroado", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-59.97274, -3.075962]}},
+{"type": "Feature", "properties": {"id": "mao-0006", "kind": "speed", "label": "Av. Torquato Tapajós · Flores", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.025102, -3.053035]}},
+{"type": "Feature", "properties": {"id": "mao-0007", "kind": "speed", "label": "Av. Santos Dumont · Tarumã", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.030951, -3.032634]}},
+{"type": "Feature", "properties": {"id": "mao-0008", "kind": "speed", "label": "Av. Prof. Nilton Lins · Flores", "limit": 60}, "geometry": {"type": "Point", "coordinates": [-60.008138, -3.064716]}}
+]}
+```
+<!-- map:end -->
 
 ## Como os dados são produzidos
 
@@ -148,6 +170,12 @@ enforced direction of travel, speed limit and the date a person last verified ea
 (fixed speed camera; one that also enforces red lights counts as `speed`), `bump` (*lombada eletrônica*,
 a fixed speed meter that shows drivers their speed) and `redlight` (red-light camera without speed
 measurement). Fixed devices on public roads only; how you use the data is up to you.
+
+### Map
+
+The [map above](#mapa) shows the published points; numbered circles group nearby points. It is
+generated from the CSV by `python tools/radars.py geojson`; don't edit it by hand. Each point's details
+are in the CSV and the GeoJSON.
 
 ### How the data is produced
 

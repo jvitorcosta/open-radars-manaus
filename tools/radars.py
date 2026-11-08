@@ -25,6 +25,7 @@ from sources import diff, fetch_immu, fetch_osm
 TEMPLATE = os.path.join(ROOT, "tools", "review_map.html")
 PLACE_HTML = os.path.join(ROOT, "build", "review_map.html")
 DIST = os.path.join(ROOT, "dist")
+README_PATH = os.path.join(ROOT, "README.md")
 APPLY_CMD = "python tools/radars.py place --apply caminho/para/placed.json"
 VERSION_RE = r"\d{4}\.(0[1-9]|1[0-2])\.\d+"
 
@@ -207,14 +208,28 @@ def cmd_place(a):
 # --- validate and geojson ------------------------------------------------------------------------
 
 
+def _read_readme():
+    if not os.path.isfile(README_PATH):
+        return None
+    with open(README_PATH, encoding="utf-8", newline="") as fh:
+        return fh.read()
+
+
 def write_geojson():
+    """data/radars.geojson and the README's map, both from data/radars.csv."""
+    rows = radarlist.read_rows(CSV_PATH)
     with open(GEOJSON_PATH, "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(geojson.build(radarlist.read_rows(CSV_PATH)))
+        fh.write(geojson.build(rows))
+    readme = _read_readme()
+    new = geojson.with_map(readme, rows) if readme is not None else None
+    if new is not None and new != readme:
+        with open(README_PATH, "w", encoding="utf-8", newline="") as fh:
+            fh.write(new)
 
 
 def cmd_geojson(_a):
     write_geojson()
-    print("wrote data/radars.geojson")
+    print("wrote data/radars.geojson and the README map")
     return 0
 
 
@@ -233,6 +248,9 @@ def cmd_validate(a):
                                       _ids_of(base) if base else set())
         if not geojson.matches(CSV_PATH, GEOJSON_PATH):
             errors.append("data/radars.geojson is out of date: run python tools/radars.py geojson")
+        readme = _read_readme()
+        if readme is not None and geojson.with_map(readme, radarlist.read_rows(CSV_PATH)) not in (None, readme):
+            errors.append("the README map is out of date: run python tools/radars.py geojson")
     for w in warnings:
         print("warning: " + w)
     for e in errors:
