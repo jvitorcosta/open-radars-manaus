@@ -90,7 +90,7 @@ in [docs/methodology.md](docs/methodology.md#methodology).
   observation.
 - **Fix a row:** change it and set `checked` to the date you verified it.
 - **Remove a row:** delete it and add `id,date,reason` to `data/retired.txt`; retired ids never return.
-- **Before sending:** `python tools/radars.py geojson` (commit the regenerated GeoJSON and README map), then
+- **Before sending:** `python tools/radars.py geojson` (commit the regenerated GeoJSON, README map and `docs/map.svg`), then
   `python tools/radars.py validate` (it fails while either is stale), then `python -m pytest -q`.
 - **Review map:** `python tools/radars.py place` places the candidates and opens the review map; drag
   each onto the carriageway of the enforced direction, check it and confirm it; then
