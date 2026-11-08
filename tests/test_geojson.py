@@ -38,3 +38,23 @@ def test_geojson_empty_list():
     doc = json.loads(gj.build([]))
     assert doc["type"] == "FeatureCollection"
     assert doc["features"] == []
+
+
+def test_map_block_is_a_geojson_fence_with_pin_colours():
+    block = gj.map_block([row(n=2, kind="redlight", limit=None), row(n=1)])
+    assert block.startswith("```geojson\n") and block.endswith("\n```\n")
+    doc = json.loads(block[len("```geojson\n"):-len("```\n")])
+    assert [f["properties"]["id"] for f in doc["features"]] == ["mao-0001", "mao-0002"]
+    assert doc["features"][0]["properties"] == {"id": "mao-0001", "kind": "speed", "label": "A", "limit": 60,
+                                                "marker-color": "#c0392b"}
+    assert doc["features"][0]["geometry"]["coordinates"] == [-60.0, -3.1]
+
+
+def test_with_map_replaces_only_between_the_markers():
+    readme = "intro\n%s\nold map\n%s\nrest\n" % (gj.MAP_START, gj.MAP_END)
+    new = gj.with_map(readme, [row()])
+    assert new.startswith("intro\n" + gj.MAP_START + "\n```geojson\n")
+    assert new.endswith("```\n" + gj.MAP_END + "\nrest\n")
+    assert "old map" not in new
+    assert gj.with_map(new, [row()]) == new
+    assert gj.with_map("no markers here\n", [row()]) is None

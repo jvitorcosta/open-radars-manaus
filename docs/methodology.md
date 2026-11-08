@@ -171,7 +171,7 @@ atualiza `checked`.
 - `id` no formato `mao-NNNN`, único, em ordem; ids removidos listados em `data/retired.txt` e nunca
   reutilizados;
 - `checked` como data válida, não futura;
-- `data/radars.geojson` igual ao gerado a partir do CSV.
+- `data/radars.geojson` e o mapa do README iguais aos gerados a partir do CSV.
 
 ### 5.5 Publicação
 
@@ -236,7 +236,7 @@ Requisitos: Python 3.12, só biblioteca padrão (e `pytest` para os testes). Com
 | `python tools/radars.py place` | Posiciona os candidatos e abre o mapa de revisão. Também `--from osm`, `--from file`, `--from marks`, `--from laps`. |
 | `python tools/radars.py place --apply placed.json` | Incorpora ao CSV os pontos confirmados. |
 | `python tools/radars.py validate` | Aplica as regras da seção 5.4. |
-| `python tools/radars.py geojson` | Gera `data/radars.geojson` a partir do CSV. |
+| `python tools/radars.py geojson` | Gera `data/radars.geojson` e o mapa do README a partir do CSV. |
 | `python tools/radars.py release AAAA.MM.N` | Valida e prepara os arquivos da versão em `dist/`. |
 
 As fontes on-line (página do IMMU, Overpass, Nominatim) mudam com o tempo. Uma nova execução pode,
@@ -372,7 +372,7 @@ the CSV with `checked` set to the confirmation date. Published points can be re-
 **5.4 Automatic validation.** `validate`, also run by CI: header, column count, no quotes; allowed `kind`
 and `source`; coordinates inside the bounding box; `heading` 0–359, required; `limit` empty or 1–199, empty
 for `redlight`; `id` as `mao-NNNN`, unique, sorted, retired ids in `data/retired.txt` and never reused;
-`checked` a valid, non-future date; GeoJSON identical to the one built from the CSV.
+`checked` a valid, non-future date; GeoJSON and README map identical to the ones built from the CSV.
 
 **5.5 Release.** A calendar-versioned tag (`YYYY.MM.N`) and a GitHub Release carrying `radars.csv` and
 `radars.geojson`; the [CHANGELOG](../CHANGELOG.md) lists added, moved, changed and removed points by id.

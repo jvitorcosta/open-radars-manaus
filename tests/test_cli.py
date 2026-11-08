@@ -33,6 +33,7 @@ def repo(tmp_path, monkeypatch):
     monkeypatch.setattr(radars, "GEOJSON_PATH", str(tmp_path / "data" / "radars.geojson"))
     monkeypatch.setattr(radars, "PLACE_HTML", str(tmp_path / "build" / "review_map.html"))
     monkeypatch.setattr(radars, "DIST", str(tmp_path / "dist"))
+    monkeypatch.setattr(radars, "README_PATH", str(tmp_path / "README.md"))
     write(radars.RETIRED_PATH, "# id,date,reason\n")
     return tmp_path
 
@@ -125,6 +126,17 @@ def test_validate_cli_exit_codes(repo, capsys):
     set_list(repo, ROW1)
     write(radars.GEOJSON_PATH, "{}\n")      # a stale GeoJSON is an error too
     assert radars.main(["validate"]) == 1
+
+
+def test_geojson_rebuilds_the_readme_map_and_validate_checks_it(repo, capsys):
+    set_list(repo, ROW1)
+    write(radars.README_PATH, "\n".join(["# t", geojson.MAP_START, geojson.MAP_END, ""]))
+    assert radars.main(["validate"]) == 1
+    assert "README map is out of date" in capsys.readouterr().out
+    assert radars.main(["geojson"]) == 0
+    with open(radars.README_PATH, encoding="utf-8") as fh:
+        assert "```geojson" in fh.read()
+    assert radars.main(["validate"]) == 0
 
 
 def test_validate_base_catches_silent_removal(repo, capsys):
